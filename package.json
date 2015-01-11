@@ -1,0 +1,25 @@
+{
+  "name": "cnd",
+  "version": "0.1.0",
+  "description": "a grab-bag NodeJS package mainly for functionalities that used to live in coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/cnd.git"
+  },
+  "keywords": [
+    "coffeenode",
+    "grabbag",
+    "terminal",
+    "types"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/cnd/issues"
+  },
+  "homepage": "https://github.com/loveencounterflow/cnd"
+}

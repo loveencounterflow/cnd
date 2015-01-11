@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+
+
+coffee -o lib -c src
+# && coffee -o . -c options.coffee
