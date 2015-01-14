@@ -7,7 +7,7 @@
 @separator                = ' '
 @depth_of_inspect         = 20
 badge                     = 'TRM'
-TYPES                     = require 'coffeenode-types'
+TYPES                     = require './TYPES'
 isa_text                  = TYPES.isa_text.bind TYPES
 _rpr                      = ( require 'util' ).inspect
 ANALYZER                  = require './TRM-VT100-ANALYZER'
