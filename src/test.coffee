@@ -6,7 +6,7 @@
 njs_path                  = require 'path'
 # njs_fs                    = require 'fs'
 #...........................................................................................................
-TRM                       = require 'coffeenode-trm'
+TRM                       = require './TRM'
 rpr                       = TRM.rpr.bind TRM
 badge                     = 'BITSNPIECES/test'
 log                       = TRM.get_logger 'plain',     badge
