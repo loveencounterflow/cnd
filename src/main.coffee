@@ -4,6 +4,7 @@
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 @LODASH                   = require 'lodash'
+@columnify                = require 'columnify'
 
 #===========================================================================================================
 # ACQUISITION
