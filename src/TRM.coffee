@@ -10,7 +10,7 @@ badge                     = 'TRM'
 TYPES                     = require './TYPES'
 isa_text                  = TYPES.isa_text.bind TYPES
 _rpr                      = ( require 'util' ).inspect
-ANALYZER                  = require './TRM-VT100-ANALYZER'
+@ANSI                     = require './TRM-VT100-ANALYZER'
 
 
 # #-----------------------------------------------------------------------------------------------------------
@@ -279,9 +279,9 @@ rainbow_idx         = -1
 # EXTRACTING COLORS / CONVERTING COLORS TO HTML
 #-----------------------------------------------------------------------------------------------------------
 ### TAINT naming unstable, to be renamed ###
-@as_html = ANALYZER.as_html.bind ANALYZER
-@get_css_source = ANALYZER.get_css_source.bind ANALYZER
-@analyze = ANALYZER.analyze.bind ANALYZER
+# @as_html = @ANSI.as_html.bind @ANSI
+# @get_css_source = @ANSI.get_css_source.bind @ANSI
+# @analyze = @ANSI.analyze.bind @ANSI
 
 #-----------------------------------------------------------------------------------------------------------
 @clean = ( text ) ->

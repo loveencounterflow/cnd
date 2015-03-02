@@ -547,10 +547,10 @@ validate_isa_number = ( x ) ->
   extname   = njs_path.extname route
   return route[ 0 ... route.length - extname.length ] + extension
 
-
 #===========================================================================================================
 # LISTS
 #-----------------------------------------------------------------------------------------------------------
 @first_of   = ( collection ) -> collection[ 0 ]
 @last_of    = ( collection ) -> collection[ collection.length - 1 ]
+
 

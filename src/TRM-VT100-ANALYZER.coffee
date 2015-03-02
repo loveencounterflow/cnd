@@ -1,4 +1,6 @@
 
+CND = require './main'
+
 #-----------------------------------------------------------------------------------------------------------
 rgb_hex_by_vt100_colorcode =
   # Primary 3-bit 8 colors. Unique representation!
@@ -306,17 +308,19 @@ ansi_vt100_cc_matcher = /(?:\x1b\x5b)([\?=;0-9]*?)([ABCDHJKfhlmnpsu])/g
   for chunk in @analyze text
     is_ansicode = not is_ansicode
     if is_ansicode
+      color_code = chunk[ chunk.length - 1 ]
       css_class = css_prefix.concat '-', chunk.join '-'
       if css_class is vt100_reset or css_class is vt100_clear
         R.push '</span>'
         open_span_count -= 1
       else
-        R.push "<span class='#{css_class}'>"
+        R.push "<span style='color:##{rgb_hex_by_vt100_colorcode[ color_code ]};'>"
+        # R.push "<span class='#{css_class}'>"
         open_span_count += 1
       continue
     else
       ### TAINT must escape ###
-      R.push chunk
+      R.push CND.escape_html chunk
   #.........................................................................................................
   if open_span_count > 0 and ( options? and options[ 'close-spans' ] )
     R.push '</span>' for n in [ 0 ... open_span_count ]
