@@ -554,3 +554,42 @@ validate_isa_number = ( x ) ->
 @last_of    = ( collection ) -> collection[ collection.length - 1 ]
 
 
+#===========================================================================================================
+# OBJECT BYTE SIZES
+#-----------------------------------------------------------------------------------------------------------
+@size_of = ( x ) -> @_size_of x, new Map()
+
+#-----------------------------------------------------------------------------------------------------------
+@_size_of = ( x, seen ) ->
+  CND   = require './main'
+  R     = 0
+  return R if seen.has x
+  seen.set x, 1
+  switch type = CND.type_of x
+    when 'boolean'                      then  R += 4
+    when 'null', 'jsundefined', 'jsnan' then  R += 1
+    when 'text', 'jsbuffer'             then  R += x.length * 2
+    when 'number'                       then  R += 8
+    else                                      R += @_size_of_container x, seen
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@_size_of_container = ( x, seen ) ->
+  seen.set x, 1
+  R = 0
+  for key in Object.keys x
+    R += @_size_of x[ key ], seen
+  return R
+
+#===========================================================================================================
+# NETWORK
+#-----------------------------------------------------------------------------------------------------------
+@get_local_ips = ->
+  ### thx to http://stackoverflow.com/a/10756441/256361 ###
+  R = []
+  for _, interface_ of ( require 'os' ).networkInterfaces()
+    for description in interface_
+      if description[ 'family' ] is 'IPv4' and not description[ 'internal' ]
+        R.push description[ 'address' ]
+  return R
+
