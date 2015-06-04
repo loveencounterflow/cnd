@@ -137,13 +137,22 @@ point in time, TSort (if set to `strict`) will throw an error, complaining that
 it has `detected cycle involving node 'buy food'`. Had we put that clause first,
 the error would have resulted from some other clause.
 
-
 Now for a more CS-ish application of TSort; specifically, we want to implement
 the ['function table'](https://youtu.be/n5UWAaw_byw?list=PLEbnTDJUr_IcPtUXFy2b1sGRPsLFMghhS&t=1237)
 that [Ravindrababu Ravula](https://www.youtube.com/channel/UCJjC1hn78yZqTf0vdTC6wAQ)
 derives in his lecture on
 [Compiler Design Lecture 9—Operator grammar and Operator precedence parser](https://www.youtube.com/watch?v=n5UWAaw_byw&index=9&list=PLEbnTDJUr_IcPtUXFy2b1sGRPsLFMghhS)
-(one of the few materials about [Pratt's TDOP] i was able to find on the web).
+(one of the few materials about Pratt-style Top-Down Operator Parsing (TDOP) i was able to find on the web).
+
+[Operator Precedence Table](https://youtu.be/n5UWAaw_byw?list=PLEbnTDJUr_IcPtUXFy2b1sGRPsLFMghhS&t=488)
+
+| .    | `id`  | `+`   | `*`   | `$`   |
+| :--: | :---: | :---: | :---: | :---: |
+| `id` | `—`   | `>`   | `>`   | `>`   |
+| `+`  | `<`   | `>`   | `<`   | `>`   |
+| `*`  | `<`   | `>`   | `>`   | `>`   |
+| `$`  | `<`   | `<`   | `<`   | `—`   |
+
 
 
 operator precedence table
