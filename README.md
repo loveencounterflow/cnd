@@ -79,7 +79,9 @@ list of entries is produced and returned that reflects one of the possible
 linearizations of the graph which satisfies all requirements so far. For the
 purpose of demonstration, we can take advantage of that list and print it out;
 we can see that the ordering of jobs will sometimes take a dramatic turn when
-new requirements are added. Let's try that for some obvious dependencies:
+new requirements are added. In case you've started the graph with `strict: no`,
+you'll have to call `TS.sort g` yourself to perform a validation and obtain
+a serialization.—Let's try that for some obvious dependencies on our list:
 
 ```coffee
 console.log ( TS.link_down g, 'buy food',          'cook'                ).join ' > '
@@ -106,9 +108,9 @@ go to bank > fetch money > go to market > buy food > cook > buy books > do some 
 Observe how the requirement `'fetch money' > 'buy books'` made `'buy books'`
 appear at the very end of the list, and how only the additonal requirement `'buy
 books' > 'do some reading'` managed to put the horse before the cart, as it
-were. It looks like like we're not quite done here yet, as we have to leave
-house after cooking and go to the exam with an empty stomach according to the
-current linearization, so some dependencies are still missing:
+were. It still looks as though we're not quite done here yet, as we have to
+leave house after cooking and go to the exam with an empty stomach according to
+the current linearization, so some dependencies are still missing:
 
 ```coffee
 console.log ( TS.link_down g, 'buy food',          'go home'             ).join ' > '
@@ -128,14 +130,22 @@ go to bank > fetch money > go to market > buy food > buy books > go home > cook 
 The takeaway up to this point is that although you may have already entered all
 relevant activities, it may or or may not be the case that the relationships
 define a unique ordering—TSort will always give you *some* ordering, but not
-necessarily the only one. TSort remains silent about that.
+necessarily the only one. TSort remains silent about that. For this reason and
+because the precise ordering is dependent upon order of insertion, it may happen
+that a given result looks satisfying not because the constraints entered were
+both sufficient and complete, but because they happened to be added to the graph
+in a fitting sequence. In the same vein, adding more constraints may or may not
+change the linearization.
 
 Furthermore, each new requirement may introduce an incompatible constraint. It
 is by no means unreasonable as such to require that we want to eat before going
 to the bank, but should we call `TS.link_down g, 'eat', 'go to bank'` at this
-point in time, TSort (if set to `strict`) will throw an error, complaining that
-it has `detected cycle involving node 'buy food'`. Had we put that clause first,
-the error would have resulted from some other clause.
+point in time, TSort will throw an error (immediately if set to `strict`,
+otherwise as soon as `TS.sort` is called), complaining that it has `detected
+cycle involving node 'buy food'`. Had we added `TS.link_down g, 'eat', 'go to
+bank'` first, the error would have resulted upon adding the constraint
+`TS.link_down g, 'go to bank', 'fetch money'`; in this case the message would've
+been `detected cycle involving node 'eat'`.
 
 Now for a more CS-ish application of TSort; specifically, we want to implement
 the ['function table'](https://youtu.be/n5UWAaw_byw?list=PLEbnTDJUr_IcPtUXFy2b1sGRPsLFMghhS&t=1237)
