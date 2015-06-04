@@ -2,6 +2,9 @@
 
 ### Adapted from https://github.com/eknkc/tsort ###
 
+#-----------------------------------------------------------------------------------------------------------
+CND                       = require './main'
+
 
 #-----------------------------------------------------------------------------------------------------------
 @new_graph = ( settings ) ->
@@ -34,12 +37,12 @@
     when '>' then @link_down me, f, g
     when '<' then @link_down me, g, f
     when '-' then return me
-    else throw new Error "expected one of '<', '>', '-', got #{rpr r}"
+    else throw new Error "expected one of '<', '>', '-', got #{CND.rpr r}"
   return @_sort me
 
 #-----------------------------------------------------------------------------------------------------------
 @_visit = ( me, results, marks, name ) ->
-  throw new Error "detected cycle involving node #{rpr name}" if marks[ name ] is 'temp'
+  throw new Error "detected cycle involving node #{CND.rpr name}" if marks[ name ] is 'temp'
   return null if marks[ name ]?
   #.......................................................................................................
   marks[ name ] = 'temp'

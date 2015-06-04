@@ -4,13 +4,14 @@
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 @LODASH                   = require 'lodash'
+@TSORT                    = require './TSORT'
 @columnify                = require 'columnify'
 
 #===========================================================================================================
 # ACQUISITION
 #-----------------------------------------------------------------------------------------------------------
 method_count  = 0
-routes        = [ './TRM', './BITSNPIECES', './TYPES' ]
+routes        = [ './TRM', './BITSNPIECES', './TYPES', ]
 #...........................................................................................................
 for route in routes
   for name, value of module = require route

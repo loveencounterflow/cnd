@@ -181,3 +181,53 @@ BNP                       = require './main'
 #     @main()
 
 
+# test_tsort = ->
+#   TS = CND.TSORT
+#   settings =
+#     strict:   yes
+#     prefixes: [ 'f|', 'g|', ]
+#   graph = TS.new_graph settings
+
+#   # TS.link_down graph, 'id', '$'
+#   # TS.link_up graph, '$', 'id'
+#   # TS.link graph, '$', '>', 'id'
+#   # debug '©TJLyH', TS.link graph, '$', '<', 'id'
+#   # debug '©TJLyH', TS.link graph, 'id', '<', '$'
+#   # help TS.sort graph
+#   TS.link graph, 'id', '-', 'id'
+#   TS.link graph, 'id', '>', '+'
+#   TS.link graph, 'id', '>', '*'
+#   TS.link graph, 'id', '>', '$'
+#   TS.link graph, '+', '<', 'id'
+#   TS.link graph, '+', '>', '+'
+#   TS.link graph, '+', '<', '*'
+#   TS.link graph, '+', '>', '$'
+#   TS.link graph, '*', '<', 'id'
+#   TS.link graph, '*', '>', '+'
+#   TS.link graph, '*', '>', '*'
+#   TS.link graph, '*', '>', '$'
+#   TS.link graph, '$', '<', 'id'
+#   TS.link graph, '$', '<', '+'
+#   TS.link graph, '$', '<', '*'
+#   TS.link graph, '$', '-', '$'
+#   debug '©DE1h1', graph
+
+#   help nodes = TS.sort graph
+#   matcher = [ 'f|id', 'g|id', 'f|*', 'g|*', 'f|+', 'g|+', 'g|$', 'f|$' ]
+#   unless CND.equals nodes, matcher
+#     throw new Error """is: #{rpr nodes}
+#       expected:  #{rpr matcher}"""
+# #   # add graph, '$', '-', '$'
+# #   try
+# #     TS.link_dual graph, '$', '>', '$'
+# #     TS.link_dual graph, '$', '<', '$'
+# #   catch error
+# #     { message } = error
+# #     if /^detected cycle involving node/.test message
+# #       warn error
+# #     else
+# #       throw error
+# #   # help nodes = TS.sort graph
+# test_tsort()
+
+# # `for ( var chr of 'ab𠀀cd' ) { debug( chr ); };`
