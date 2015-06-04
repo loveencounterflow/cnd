@@ -153,9 +153,18 @@ derives in his lecture on
 | `*`  | `<`   | `>`   | `>`   | `>`   |
 | `$`  | `<`   | `<`   | `<`   | `—`   |
 
-
-
 operator precedence table
+
+```
+       f|id > g|* > f|+ > g|+ > f|$
+g|id > f|*  > ⤴
+```
+
+| .    | `id`  | `+`   | `*`   | `$`   |
+| :--: | :---: | :---: | :---: | :---: |
+| `f`  | `4`   | `2`   | `4`   | `0`   |
+| `g`  | `5`   | `1`   | `3`   | `0`   |
+
 
 
 ```coffee
@@ -173,31 +182,22 @@ test_tsort = ->
     strict:   yes
     prefixes: [ 'f|', 'g|', ]
   graph = TS.new_graph settings
-
-  # TS.link_down graph, 'id', '$'
-  # TS.link_up graph, '$', 'id'
-  # TS.link graph, '$', '>', 'id'
-  # debug '©TJLyH', TS.link graph, '$', '<', 'id'
-  # debug '©TJLyH', TS.link graph, 'id', '<', '$'
-  # help TS.sort graph
   TS.link graph, 'id', '-', 'id'
   TS.link graph, 'id', '>', '+'
   TS.link graph, 'id', '>', '*'
   TS.link graph, 'id', '>', '$'
-  TS.link graph, '+', '<', 'id'
-  TS.link graph, '+', '>', '+'
-  TS.link graph, '+', '<', '*'
-  TS.link graph, '+', '>', '$'
-  TS.link graph, '*', '<', 'id'
-  TS.link graph, '*', '>', '+'
-  TS.link graph, '*', '>', '*'
-  TS.link graph, '*', '>', '$'
-  TS.link graph, '$', '<', 'id'
-  TS.link graph, '$', '<', '+'
-  TS.link graph, '$', '<', '*'
-  TS.link graph, '$', '-', '$'
-  debug '©DE1h1', graph
-
+  TS.link graph, '+',  '<', 'id'
+  TS.link graph, '+',  '>', '+'
+  TS.link graph, '+',  '<', '*'
+  TS.link graph, '+',  '>', '$'
+  TS.link graph, '*',  '<', 'id'
+  TS.link graph, '*',  '>', '+'
+  TS.link graph, '*',  '>', '*'
+  TS.link graph, '*',  '>', '$'
+  TS.link graph, '$',  '<', 'id'
+  TS.link graph, '$',  '<', '+'
+  TS.link graph, '$',  '<', '*'
+  TS.link graph, '$',  '-', '$'
   help nodes = TS.sort graph
   matcher = [ 'f|id', 'g|id', 'f|*', 'g|*', 'f|+', 'g|+', 'g|$', 'f|$' ]
   unless CND.equals nodes, matcher
@@ -215,6 +215,24 @@ test_tsort = ->
 
 test_tsort()
 ```
+
+```coffee
+console.log '1',  ( TS.precedence_of graph, 'f|id' ) > ( TS.precedence_of graph, 'g|+'  ) # true
+console.log '2',  ( TS.precedence_of graph, 'f|id' ) > ( TS.precedence_of graph, 'g|*'  ) # true
+console.log '3',  ( TS.precedence_of graph, 'f|id' ) > ( TS.precedence_of graph, 'g|$'  ) # true
+console.log '4',  ( TS.precedence_of graph, 'f|+'  ) < ( TS.precedence_of graph, 'g|id' ) # true
+console.log '5',  ( TS.precedence_of graph, 'f|+'  ) > ( TS.precedence_of graph, 'g|+'  ) # true
+console.log '6',  ( TS.precedence_of graph, 'f|+'  ) < ( TS.precedence_of graph, 'g|*'  ) # true
+console.log '7',  ( TS.precedence_of graph, 'f|+'  ) > ( TS.precedence_of graph, 'g|$'  ) # true
+console.log '8',  ( TS.precedence_of graph, 'f|*'  ) < ( TS.precedence_of graph, 'g|id' ) # true
+console.log '9',  ( TS.precedence_of graph, 'f|*'  ) > ( TS.precedence_of graph, 'g|+'  ) # true
+console.log '10', ( TS.precedence_of graph, 'f|*'  ) > ( TS.precedence_of graph, 'g|*'  ) # true
+console.log '11', ( TS.precedence_of graph, 'f|*'  ) > ( TS.precedence_of graph, 'g|$'  ) # true
+console.log '12', ( TS.precedence_of graph, 'f|$'  ) < ( TS.precedence_of graph, 'g|id' ) # true
+console.log '13', ( TS.precedence_of graph, 'f|$'  ) < ( TS.precedence_of graph, 'g|+'  ) # true
+console.log '14', ( TS.precedence_of graph, 'f|$'  ) < ( TS.precedence_of graph, 'g|*'  ) # true
+```
+
 
 
 ### Some TDOP Links

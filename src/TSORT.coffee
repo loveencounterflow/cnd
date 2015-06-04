@@ -16,6 +16,7 @@ CND                       = require './main'
     'ps-by-cs': {}
     'strict':   strict
     'prefixes': prefixes
+    '%nodes':   null
   return R
 
 #-----------------------------------------------------------------------------------------------------------
@@ -23,6 +24,11 @@ CND                       = require './main'
   ### TAINT check for trivial errors such as precedence == consequence ###
   me[ 'ps-by-cs' ][ precedence ]?= []
   ( me[ 'ps-by-cs' ][ consequence ]?= [] ).push precedence
+  return @_sort me
+
+#-----------------------------------------------------------------------------------------------------------
+@register = ( me, names... ) ->
+  me[ 'ps-by-cs' ][ name ]?= [] for name in names
   return @_sort me
 
 #-----------------------------------------------------------------------------------------------------------
@@ -34,11 +40,11 @@ CND                       = require './main'
     f   = "#{prefixes[ 0 ]}#{f}"
     g   = "#{prefixes[ 1 ]}#{g}"
   switch r
-    when '>' then @link_down me, f, g
-    when '<' then @link_down me, g, f
-    when '-' then return me
+    when '>' then return @link_down me, f, g
+    when '<' then return @link_down me, g, f
+    when '-' then return @register  me, f, g
     else throw new Error "expected one of '<', '>', '-', got #{CND.rpr r}"
-  return @_sort me
+  return null
 
 #-----------------------------------------------------------------------------------------------------------
 @_visit = ( me, results, marks, name ) ->
@@ -56,7 +62,15 @@ CND                       = require './main'
 
 #-----------------------------------------------------------------------------------------------------------
 @_sort = ( me ) ->
+  me[ '%nodes' ] = null
   return if me[ 'strict' ] then ( @sort me ) else null
+
+#-----------------------------------------------------------------------------------------------------------
+@precedence_of = ( me, name ) ->
+  nodes = me[ '%nodes' ] ? @sort me
+  unless ( R = nodes.indexOf name ) >= 0
+    throw new Error "unknown node #{rpr name}"
+  return nodes.length - R - 1
 
 #-----------------------------------------------------------------------------------------------------------
 @sort = ( me ) ->
@@ -68,6 +82,7 @@ CND                       = require './main'
   for precedence in precedences
     @_visit me, R, marks, precedence unless marks[ precedence ]?
   #.........................................................................................................
+  me[ '%nodes' ] = R
   return R
 
 
