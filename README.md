@@ -58,26 +58,27 @@ So let's say you have a todo list:
 ```
 
 Now you don't have money, foods or books at home right now, but you want to eat,
-do some reading, and fo to the exam after that, so clearly there's a certain
-order of events that would make more sense than other orderings. It's hard to see
-how you can organize your day when you look at the entire list, but given any
-two jobs, it's often easy to see which one should preced the other one.
+do some reading, and go to the exam after that, so clearly there are certain
+orderings of events that would make more sense than other orderings. It's
+perhaps not immediately clear how you can organize all these jobs when you look
+at the entire list, but given any two jobs, it's often easy to see which one
+should preced the other one.
 
 Once we have instantiated a graph `g`, we can add dual relationships piecemeal,
 the convention being that we imagine arrows or links pointing from preconditions
 'down' to consequences, which is why the corresponding method is named
 `link_down`. Calling `TS.link_down g, 'buy food', 'cook'` means: 'Add a link to
-graph `g` to indicate that before I can `'cook'`, I have to `'by food'` first',
+graph `g` to indicate that before I can `'cook'`, I have to `'buy food'` first',
 and so on. It is customary to symbolically write `'buy food' > 'cook'` to
 indicate the dependency.
 
 In case the graph has been instantiated with a `strict: yes` setting, CND TSort
 will validate the graph for each single new relationship; as a side effect, a
 list of entries is produced and returned that reflects one of the possible
-linearization of that satisfies all requirements so far. For the purpose of
-demonstration, we can take advantage of that list and print it out; we can see
-that the ordering of jobs will sometimes take a dramatic turn when new
-requirements are added. Let's try that for some obvious dependencies:
+linearizations of the graph which satisfies all requirements so far. For the
+purpose of demonstration, we can take advantage of that list and print it out;
+we can see that the ordering of jobs will sometimes take a dramatic turn when
+new requirements are added. Let's try that for some obvious dependencies:
 
 ```coffee
 console.log ( TS.link_down g, 'buy food',          'cook'                ).join ' > '
