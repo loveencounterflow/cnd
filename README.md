@@ -2,6 +2,7 @@
 
 - [cnd](#cnd)
 	- [CND TSort](#cnd-tsort)
+		- [Some TDOP Links](#some-tdop-links)
 
 > **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
@@ -137,29 +138,15 @@ it has `detected cycle involving node 'buy food'`. Had we put that clause first,
 the error would have resulted from some other clause.
 
 
+Now for a more CS-ish application of TSort; specifically, we want to implement
+the ['function table'](https://youtu.be/n5UWAaw_byw?list=PLEbnTDJUr_IcPtUXFy2b1sGRPsLFMghhS&t=1237)
+that [Ravindrababu Ravula](https://www.youtube.com/channel/UCJjC1hn78yZqTf0vdTC6wAQ)
+derives in his lecture on
+[Compiler Design Lecture 9—Operator grammar and Operator precedence parser](https://www.youtube.com/watch?v=n5UWAaw_byw&index=9&list=PLEbnTDJUr_IcPtUXFy2b1sGRPsLFMghhS)
+(one of the few materials about [Pratt's TDOP] i was able to find on the web).
 
 
-```coffee
-```
-
-```coffee
-```
-
-@new_graph = ( settings ) ->
-  settings ?= {}
-  strict    = settings[ 'strict'    ] ? yes
-  prefixes  = settings[ 'prefixes'  ] ? null
-  R =
-    '~isa':     'CND/tsort-graph'
-    'ps-by-cs': {}
-    'strict':   strict
-    'prefixes': prefixes
-
-@link_down = ( me, precedence, consequence ) ->
-@link_up = ( me, consequence, precedence ) -> @link_down me, precedence, consequence
-@link = ( me, f, r, g ) ->
-@sort = ( me ) ->
-
+operator precedence table
 
 
 ```coffee
@@ -221,6 +208,9 @@ test_tsort()
 ```
 
 
+### Some TDOP Links
 
-
-
+* [Pratt's original paper from 1973: http://hall.org.ua/halls/wizzard/pdf/Vaughan.Pratt.TDOP.pdf](http://hall.org.ua/halls/wizzard/pdf/Vaughan.Pratt.TDOP.pdf)
+* [The same as an HTML page: http://tdop.github.io/](http://tdop.github.io/)
+* [Simple Top-Down Parsing in Python: http://effbot.org/zone/simple-top-down-parsing.htm](http://effbot.org/zone/simple-top-down-parsing.htm)
+* [Douglas Crockford on TDOP: http://javascript.crockford.com/tdop/tdop.html](http://javascript.crockford.com/tdop/tdop.html)
