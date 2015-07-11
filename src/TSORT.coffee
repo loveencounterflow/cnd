@@ -66,6 +66,14 @@ CND                       = require './main'
   return if me[ 'strict' ] then ( @sort me ) else null
 
 #-----------------------------------------------------------------------------------------------------------
+@get_precedences = ( me ) ->
+  nodes   = me[ '%nodes' ] ? @sort me
+  delta   = nodes.length - 1
+  R       = {}
+  R[ name ] = delta - name_idx for name, name_idx in nodes
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
 @precedence_of = ( me, name ) ->
   nodes = me[ '%nodes' ] ? @sort me
   unless ( R = nodes.indexOf name ) >= 0

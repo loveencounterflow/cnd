@@ -5,6 +5,7 @@ njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 @LODASH                   = require 'lodash'
 @TSORT                    = require './TSORT'
+@BLOOM                    = require './BLOOM'
 @columnify                = require 'columnify'
 
 #===========================================================================================================

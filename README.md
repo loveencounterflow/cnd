@@ -2,6 +2,7 @@
 
 - [cnd](#cnd)
 	- [CND TSort](#cnd-tsort)
+		- [TSort API](#tsort-api)
 		- [Some TDOP Links](#some-tdop-links)
 
 > **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
@@ -243,7 +244,19 @@ console.log '13', ( TS.precedence_of graph, 'f|$'  ) < ( TS.precedence_of graph,
 console.log '14', ( TS.precedence_of graph, 'f|$'  ) < ( TS.precedence_of graph, 'g|*'  ) # true
 ```
 
+### TSort API
 
+* `@new_graph = ( settings ) ->`
+
+* `@link = ( me, f, r, g ) ->`
+* `@link_down = ( me, precedence, consequence ) ->`
+* `@link_up = ( me, consequence, precedence ) -> @link_down me, precedence, consequence`
+* `@register = ( me, names... ) ->`
+
+* `@sort = ( me ) ->`
+
+* `@get_precedences = ( me ) ->`
+* `@precedence_of = ( me, name ) ->`
 
 ### Some TDOP Links
 

@@ -18,11 +18,11 @@ rpr                       = njs_util.inspect
   return ( require 'equals' ) P...
 
 #-----------------------------------------------------------------------------------------------------------
-@format_number = ( n ) ->
+@format_number = ( n, grouper = "'" ) ->
   ### A simple number formatter. ###
   n       = n.toString()
   f       = ( n ) -> return h n, /(\d+)(\d{3})/
-  h       = ( n, re ) -> n = n.replace re, "$1" + "'" + "$2" while re.test n; return n
+  h       = ( n, re ) -> n = n.replace re, "$1" + grouper + "$2" while re.test n; return n
   return f n
 
 #-----------------------------------------------------------------------------------------------------------
