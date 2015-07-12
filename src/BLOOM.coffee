@@ -39,11 +39,16 @@
 #-----------------------------------------------------------------------------------------------------------
 @add          = ( me, key     ) -> me[ '%self' ].add key
 @has          = ( me, key     ) -> me[ '%self' ].has key
-@as_buffer    = ( me          ) -> new Buffer JSON.stringify me
+
+#-----------------------------------------------------------------------------------------------------------
+@as_buffer = ( me ) ->
+  njs_zlib  = require 'zlib'
+  return njs_zlib.deflateSync ( new Buffer JSON.stringify me ), level: njs_zlib.Z_BEST_COMPRESSION
 
 #-----------------------------------------------------------------------------------------------------------
 @from_buffer  = ( bloom_bfr  ) ->
-  R = JSON.parse bloom_bfr.toString()
+  R = ( require 'zlib' ).inflateSync bloom_bfr
+  R = JSON.parse R.toString()
   R[ '%self'] = ( require 'bloem' ).ScalingBloem.destringify R[ '%self' ]
   return R
 
