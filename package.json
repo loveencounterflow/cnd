@@ -1,6 +1,6 @@
 {
   "name": "cnd",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a grab-bag NodeJS package mainly for functionalities that used to live in coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types",
   "main": "lib/main.js",
   "scripts": {
