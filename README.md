@@ -1,6 +1,7 @@
 
 
 - [cnd](#cnd)
+	- [CND Shim](#cnd-shim)
 	- [CND TSort](#cnd-tsort)
 		- [TSort API](#tsort-api)
 		- [Some TDOP Links](#some-tdop-links)
@@ -13,6 +14,20 @@
 a grab-bag NodeJS package mainly for functionalities that used to live in
 coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types
 
+## CND Shim
+
+CND now includes https://github.com/es-shims/es6-shim and https://github.com/es-shims/es7-shim;
+in order to use these, say
+
+```coffee
+CND = require 'cnd'
+CND.shim()
+```
+
+which will then polyfill you current runtime to the point where you approximately
+reach compatibility with NodeJS v0.12 run with the `--harmony` switch. Note
+that not everything can be polyfilled; in particular WeakMaps and `yield` cannot
+be provided this way.
 
 ## CND TSort
 
