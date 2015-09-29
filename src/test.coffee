@@ -25,130 +25,115 @@ echo                      = TRM.echo.bind TRM
 assert                    = require 'assert'
 #...........................................................................................................
 # docopt                    = ( require 'docopt' ).docopt
-BNP                       = require './main'
+CND                       = require './main'
 # # ESCODEGEN                 = require 'escodegen'
 # # escodegen_options         = ( require '../options' )[ 'escodegen' ]
 # @new                      = require './new'
 # #...........................................................................................................
 # @cl_options               = null
 
+#-----------------------------------------------------------------------------------------------------------
+eq = ( P... ) =>
+  whisper P
+  throw new Error "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}" unless CND.equals P...
 
 #-----------------------------------------------------------------------------------------------------------
-@test =
+# throws = assert.throws.bind assert
 
-  #---------------------------------------------------------------------------------------------------------
-  ok: ( result ) =>
-    ### Tests whether `result` is strictly `true` (not only true-ish). ###
-    throw new Error "expected true, got\n#{rpr result}" unless result is true
+#-----------------------------------------------------------------------------------------------------------
+@_test = ->
+  error_count = 0
+  for name, method of @
+    continue if name.startsWith '_'
+    whisper name
+    try
+      method()
+    catch error
+      # throw error
+      error_count += +1
+      warn error[ 'message' ]
+  help "tests completed successfully" if error_count is 0
+  process.exit error_count
 
-  #---------------------------------------------------------------------------------------------------------
-  fail: ( message ) =>
-    throw new Error message
 
-  #---------------------------------------------------------------------------------------------------------
-  eq: ( P... ) =>
-    ### Tests whether all arguments are pairwise and deeply equal. Uses CoffeeNode Bits'n'Pieces' `equal`
-    for testing as (1) Node's `assert` distinguishes—unnecessarily—between shallow and deep equality, and,
-    worse, [`assert.equal` and `assert.deepEqual` are broken](https://github.com/joyent/node/issues/7161),
-    as they use JavaScript's broken `==` equality operator instead of `===`. ###
-    values = []
-    for p in P
-      @new._delete_grammar_references p
-      values.push rpr p
-    throw new Error "not equal: \n#{values.join '\n'}" unless BNP.equals P...
-    # throw new Error "not equal: \n#{( ( rpr p )[ .. 250 ] for p in P ).join '\n'}" unless BNP.equals P...
-    # throw new Error "not equal: \n#{( JSON.stringify p for p in P ).join '\n'}" unless r
+#-----------------------------------------------------------------------------------------------------------
+@[ 'test interval tree' ] = ->
+  ITREE = CND.INTERVALTREE
+  show  = ( node ) ->
+    this_key    = node[ 'key' ]
+    this_value  = node[ 'value' ]
+    this_m      = ITREE._get_m node
+    help this_value, this_m, '->', ( ITREE._get_parent node )?[ 'value' ] ? './.'
+    show left_node  if (  left_node = node[ 'left'  ] )?
+    show right_node if ( right_node = node[ 'right' ] )?
+    return null
+  search = ->
+    for n in [ 0 .. 15 ]
+      help n
+      for node in ITREE.find tree, n
+        urge '  ', node[ 'key' ], node[ 'value' ]
+  tree      = ITREE.new_tree()
+  intervals = [
+    [ 3, 7, 'A', ]
+    [ 5, 7, 'B', ]
+    [ 8, 12, 'C1', ]
+    [ 8, 12, 'C2', ]
+    [ 2, 14, 'D', ]
+    [ 4, 4, 'E', ]
+    [ 10, 13, 'F', ]
+    [ 8, 22, 'G', ]
+    [ 1, 3, 'H', ]
+    ]
+  ITREE.add_interval tree, interval for interval in intervals
+  ITREE._decorate tree[ '%self' ][ 'root' ]
+  # search()
+  show tree[ '%self' ][ 'root' ]
+  eq ( ITREE.find tree, 0 ), []
+  eq ( ITREE.find tree, 1 ), [[1,3,"H"]]
+  eq ( ITREE.find tree, 2 ), [[2,14,"D"],[1,3,"H"]]
+  eq ( ITREE.find tree, 3 ), [[3,7,"A"],[2,14,"D"],[1,3,"H"]]
+  eq ( ITREE.find tree, 4 ), [[3,7,"A"],[2,14,"D"]]
+  eq ( ITREE.find tree, 5 ), [[5,7,"B"],[3,7,"A"],[2,14,"D"]]
+  eq ( ITREE.find tree, 6 ), [[5,7,"B"],[3,7,"A"],[2,14,"D"]]
+  eq ( ITREE.find tree, 7 ), [[5,7,"B"],[3,7,"A"],[2,14,"D"]]
+  eq ( ITREE.find tree, 8 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 9 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 10 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 11 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 12 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 13 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 14 ), [[2,14,"D"],[8,22,"G"]]
+  eq ( ITREE.find tree, 15 ), [[8,22,"G"]]
+  eq ( ITREE.find tree, 16 ), [[8,22,"G"]]
+  eq ( ITREE.find tree, 17 ), [[8,22,"G"]]
+  eq ( ITREE.find tree, 18 ), [[8,22,"G"]]
+  # ITREE.add_interval tree, [ 10, 13, 'FF' ]
+  # search()
+  return null
 
-  # #---------------------------------------------------------------------------------------------------------
-  # as_js: ( node ) =>
-  #   ### Given a SpiderMonkey Parser API-compliant `node` object, returns the corresponding JavaScript
-  #   source code as results from applying EsCodeGen (with the settings as detailed in `options.coffee`);
-  #   this is handy to do a quick sanity check on expected translation results. ###
-  #   return ESCODEGEN.generate node, escodegen_options
 
-  #---------------------------------------------------------------------------------------------------------
-  throws: assert.throws.bind assert
 
-# #-----------------------------------------------------------------------------------------------------------
-# @_matches_filter = ( nr, module_name, hints ) ->
-#   return ( nr isnt 0 ) if hints.length is 0
-#   for hint in hints
-#     return yes if hint is "#{nr}"
-#     return yes if hint.test? and hint.test module_name
-#   return no
 
-# #-----------------------------------------------------------------------------------------------------------
-# @main = ->
-#   # if TYPES.isa_text cl_options
-#   #   help cl_options
-#   # whisper cl_options[ '--long-errors' ]
-#   # process.exit()
-#   #.........................................................................................................
-#   route_infos   = LOADER.get_route_infos 'is-tty': yes
-#   route_count   = route_infos.length
-#   skip_count    = 0
-#   test_count    = 0
-#   pass_count    = 0
-#   fail_count    = 0
-#   miss_count    = 0
-#   hints         = @cl_options[ '<hints>' ]
-#   #.........................................................................................................
-#   whisper "matching modules with #{( rpr m for m in hints ).join ', '}" unless hints.length is 0
-#   for m, idx in hints
-#     unless /^[0-9]+$/.test m
-#       if m is '+'
-#         m = /.*/
-#       else
-#         m = new RegExp ".*#{BNP.escape_regex m}.*", 'i'
-#     hints[ idx ] = m
-#   # whisper hints
-#   #.........................................................................................................
-#   for route_info in route_infos
-#     { route, name: module_name, nr } = route_info
-#     unless @_matches_filter nr, module_name, hints
-#       whisper "skipping #{nr}-#{module_name}"
-#       skip_count += 1
-#       continue
-#     info ( rpr nr ) + '-' + module_name
-#     module = require route
-#     #.......................................................................................................
-#     ### TAINT reference to `$TESTS` to be removed ###
-#     TESTS = module[ '$TESTS' ] ? module[ 'tests' ]
-#     unless TESTS? and ( test_names = ( test_name for test_name of TESTS ) ).length > 0
-#       miss_count += 1
-#       urge "no tests found for #{nr}-#{module_name} (#{route})"
-#       continue
-#     #.......................................................................................................
-#     for test_name in test_names
-#       continue if test_name[ 0 ] is '_'
-#       test_count += 1
-#       locator     = ( rpr nr ) + '-' + module_name + '/' + test_name
-#       try
-#         TESTS[ test_name ].call module, @test
-#       catch error
-#         fail_count += 1
-#         warn "#{locator}:"
-#         if @cl_options[ '--long-errors' ]
-#           warn error[ 'stack' ]
-#         else
-#           warn error[ 'message' ]
-#         continue
-#       #.....................................................................................................
-#       pass_count += 1
-#       praise "#{locator}"
-#   #.........................................................................................................
-#   whisper '-------------------------------------------------------------'
-#   info    "Skipped #{skip_count} out of #{route_count} modules;"
-#   info    "of the #{route_count - skip_count} modules inspected,"
-#   urge    "#{miss_count} modules had no test cases."
-#   info    "In the remaining #{route_count - miss_count - skip_count} modules,"
-#   info    "#{test_count} tests were performed,"
-#   praise  "of which #{pass_count} tests passed,"
-#   warn    "and #{fail_count} tests failed."
-#   whisper '-------------------------------------------------------------'
-#   #.........................................................................................................
-#   return null
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################################################################
+unless module.parent?
+  @_test()
 
 
 # ############################################################################################################

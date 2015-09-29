@@ -4,7 +4,7 @@
   "description": "a grab-bag NodeJS package mainly for functionalities that used to live in coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types",
   "main": "lib/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./build && node lib/test.js"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,6 @@
     "functional-red-black-tree": "^1.0.1",
     "lodash": "^3.2.0",
     "permute": "^1.0.0"
-  }
+  },
+  "devDependencies": {}
 }

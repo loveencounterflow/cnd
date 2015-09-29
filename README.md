@@ -1,6 +1,7 @@
 
 
 - [cnd](#cnd)
+	- [CND Interval Tree](#cnd-interval-tree)
 	- [CND Shim](#cnd-shim)
 	- [CND TSort](#cnd-tsort)
 		- [TSort API](#tsort-api)
@@ -13,6 +14,36 @@
 
 a grab-bag NodeJS package mainly for functionalities that used to live in
 coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types
+
+## CND Interval Tree
+
+* https://www.youtube.com/watch?v=q0QOYtSsTg4
+* https://www.youtube.com/watch?v=PHlTuCVxJz4
+* https://github.com/mikolalysenko/functional-red-black-tree
+
+
+* Simplified API (compared to `functional-red-black-tree`)
+* possible to dynamically add nodes
+* possible to access underlying red/black tree as `tree[ '%self' ]`, root node as `tree[ '%self' ][ 'root' ]`
+* possible to access
+
+```coffee
+CND       = require 'cnd'
+ITREE     = CND.INTERVALTREE
+tree      = ITREE.new_tree()
+intervals = [
+  [ 3, 7, 'A', ]
+  [ 5, 7, 'B', ]
+  [ 8, 12, 'C', ]
+  [ 2, 14, 'D', ]
+  [ 4, 4, 'E', ]
+  ]
+ITREE.add_interval tree, interval for interval in intervals
+for n in [ 0 .. 15 ]
+  console.log n
+  for node in ITREE.find tree, n
+    console.log node[ 'key' ], node[ 'value' ]
+```
 
 ## CND Shim
 
