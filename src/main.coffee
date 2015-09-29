@@ -7,12 +7,13 @@ rpr                       = njs_util.inspect
 @TSORT                    = require './TSORT'
 @BLOOM                    = require './BLOOM'
 @columnify                = require 'columnify'
+@INTERVALTREE             = require './INTERVALTREE'
 
 #===========================================================================================================
 # ACQUISITION
 #-----------------------------------------------------------------------------------------------------------
 method_count  = 0
-routes        = [ './TRM', './BITSNPIECES', './TYPES', './SHIM', './INTERVALTREE' ]
+routes        = [ './TRM', './BITSNPIECES', './TYPES', './SHIM', ]
 #...........................................................................................................
 for route in routes
   for name, value of module = require route

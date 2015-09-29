@@ -1,20 +1,9 @@
 
 ############################################################################################################
-# njs_path                  = require 'path'
-# njs_fs                    = require 'fs'
-#...........................................................................................................
-CND                       = require 'cnd'
-rpr                       = CND.rpr
-badge                     = 'SCRATCH/interval-trees/red-black-trees'
-log                       = CND.get_logger 'plain',     badge
-info                      = CND.get_logger 'info',      badge
-whisper                   = CND.get_logger 'whisper',   badge
-alert                     = CND.get_logger 'alert',     badge
-debug                     = CND.get_logger 'debug',     badge
-warn                      = CND.get_logger 'warn',      badge
-help                      = CND.get_logger 'help',      badge
-urge                      = CND.get_logger 'urge',      badge
-echo                      = CND.echo.bind CND
+CND                       = require './main'
+# rpr                       = CND.rpr
+# urge                      = CND.get_logger 'urge',      badge
+# echo                      = CND.echo.bind CND
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -37,7 +26,6 @@ get_m = ->
   return ( R = @[ m_sym ] ) if R?
   left_m  = @[ 'left'  ]?[ get_m_sym ]() ? -Infinity
   right_m = @[ 'right' ]?[ get_m_sym ]() ? -Infinity
-  # debug '©cfGy8', value, left_m, right_m, @[ 'value' ][ 1 ]
   return @[ m_sym ] = Math.max left_m, right_m, @[ 'value' ][ 1 ]
 
 #-----------------------------------------------------------------------------------------------------------
@@ -46,7 +34,6 @@ get_m = ->
   node[ is_decorated_sym  ] = true
   node[ get_m_sym     ] = get_m
   if ( left_node = node[ 'left' ] )?
-    ### TAINT use symbols ###
     left_node[ parent_sym ]    = node
     left_node[ get_m_sym  ]    = get_m
     @_decorate left_node
@@ -77,17 +64,18 @@ get_m = ->
   return @_find  left_node, probe, R
 
 #-----------------------------------------------------------------------------------------------------------
-show = ( node ) ->
-  this_key    = node[ 'key' ]
-  this_value  = node[ 'value' ]
-  this_m      = node[ get_m_sym ]()
-  help this_key, this_value, this_m
-  show left_node  if (  left_node = node[ 'left'  ] )?
-  show right_node if ( right_node = node[ 'right' ] )?
-  return null
-
-#-----------------------------------------------------------------------------------------------------------
 @_demo = ->
+  badge = 'CND/INTERVALTREE/demo'
+  help  = CND.get_logger 'help',      badge
+  urge  = CND.get_logger 'urge',      badge
+  show  = ( node ) ->
+    this_key    = node[ 'key' ]
+    this_value  = node[ 'value' ]
+    this_m      = node[ get_m_sym ]()
+    help this_key, this_value, this_m
+    show left_node  if (  left_node = node[ 'left'  ] )?
+    show right_node if ( right_node = node[ 'right' ] )?
+    return null
   tree      = @new_tree()
   intervals = [
     [ 3, 7, 'A', ]
