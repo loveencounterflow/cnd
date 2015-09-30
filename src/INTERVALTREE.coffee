@@ -12,6 +12,7 @@ is_clean_sym      = Symbol 'is_clean'
 parent_sym        = Symbol 'parent'
 get_m_sym         = Symbol 'get_m'
 m_sym             = Symbol 'm'
+intersections_sym = Symbol 'intersections'
 
 #-----------------------------------------------------------------------------------------------------------
 @new_tree = ->
@@ -55,17 +56,26 @@ get_m = ->
 
 #-----------------------------------------------------------------------------------------------------------
 @find = ( me, probe ) ->
-  root  = me[ '%self' ][ 'root' ]
+  root          = me[ '%self' ][ 'root' ]
+  probe         = [ probe, probe, ] unless CND.isa_list probe
+  R             = new Set()
+  # intersections = new Set()
   @_decorate root
-  probe = [ probe, probe, ] unless CND.isa_list probe
-  return @_find root, probe, []
+  @_find root, probe, R
+  # for node in Array.from R.keys()
+  #   ( ( require './TRM' ).get_logger 'debug' ) @find me, node[ 'value' ][ 0 .. 1 ]
+  #   intersections = @_get_
+  return ( node[ 'value' ] for node in Array.from R.keys() )
 
 #-----------------------------------------------------------------------------------------------------------
 @_find = ( node, probe, R ) ->
   [ probe_lo, probe_hi, ] = probe
   [  node_lo,  node_hi, ] = node[ 'value' ]
   unless probe_lo > node_hi or probe_hi < node_lo
-    R.push node[ 'value' ]
+    R.add node
+    ( ( require './TRM' ).get_logger 'help' ) node[ 'value' ][ 2 ]
+  else
+    ( ( require './TRM' ).get_logger 'warn' ) node[ 'value' ][ 2 ]
   left_node   = node[ 'left' ]
   right_node  = node[ 'right' ]
   return R if ( not left_node? ) and ( not right_node? )

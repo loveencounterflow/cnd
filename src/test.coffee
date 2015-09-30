@@ -20,25 +20,18 @@ urge                      = TRM.get_logger 'urge',      badge
 praise                    = TRM.get_logger 'praise',    badge
 echo                      = TRM.echo.bind TRM
 #...........................................................................................................
-# $new                      = require './new'
-# LOADER                    = require './LOADER'
-assert                    = require 'assert'
-#...........................................................................................................
-# docopt                    = ( require 'docopt' ).docopt
 CND                       = require './main'
-# # ESCODEGEN                 = require 'escodegen'
-# # escodegen_options         = ( require '../options' )[ 'escodegen' ]
-# @new                      = require './new'
-# #...........................................................................................................
-# @cl_options               = null
+ITREE                     = CND.INTERVALTREE
+
 
 #-----------------------------------------------------------------------------------------------------------
 eq = ( P... ) =>
   whisper P
-  throw new Error "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}" unless CND.equals P...
-
-#-----------------------------------------------------------------------------------------------------------
-# throws = assert.throws.bind assert
+  # throw new Error "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}" unless CND.equals P...
+  unless CND.equals P...
+    warn "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}"
+    return 1
+  return 0
 
 #-----------------------------------------------------------------------------------------------------------
 @_test = ->
@@ -55,18 +48,22 @@ eq = ( P... ) =>
   help "tests completed successfully" if error_count is 0
   process.exit error_count
 
+#-----------------------------------------------------------------------------------------------------------
+find = ( tree, probe ) ->
+  return ( interval[ 2 ] for interval in ITREE.find tree, probe ).join ','
 
 #-----------------------------------------------------------------------------------------------------------
-@[ 'test interval tree' ] = ->
-  ITREE = CND.INTERVALTREE
-  show  = ( node ) ->
-    this_key    = node[ 'key' ]
-    this_value  = node[ 'value' ]
-    this_m      = ITREE._get_m node
-    help this_value, this_m, '->', ( ITREE._get_parent node )?[ 'value' ] ? './.'
-    show left_node  if (  left_node = node[ 'left'  ] )?
-    show right_node if ( right_node = node[ 'right' ] )?
-    return null
+show  = ( node ) ->
+  this_key    = node[ 'key' ]
+  this_value  = node[ 'value' ]
+  this_m      = ITREE._get_m node
+  help this_value, this_m, '->', ( ITREE._get_parent node )?[ 'value' ] ? './.'
+  show left_node  if (  left_node = node[ 'left'  ] )?
+  show right_node if ( right_node = node[ 'right' ] )?
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ '_test interval tree 1' ] = ->
   search = ->
     for n in [ 0 .. 15 ]
       help n
@@ -74,41 +71,91 @@ eq = ( P... ) =>
         urge '  ', node[ 'key' ], node[ 'value' ]
   tree      = ITREE.new_tree()
   intervals = [
-    [ 3, 7, 'A', ]
-    [ 5, 7, 'B', ]
-    [ 8, 12, 'C1', ]
-    [ 8, 12, 'C2', ]
-    [ 2, 14, 'D', ]
-    [ 4, 4, 'E', ]
-    [ 10, 13, 'F', ]
+    [ 1, 3, 'A', ]
+    [ 2, 14, 'B', ]
+    [ 3, 7, 'C', ]
+    [ 4, 4, 'D', ]
+    [ 5, 7, 'E', ]
+    [ 8, 12, 'F1', ]
+    # [ 8, 12, 'F2', ]
     [ 8, 22, 'G', ]
-    [ 1, 3, 'H', ]
+    [ 10, 13, 'H', ]
     ]
   ITREE.add_interval tree, interval for interval in intervals
   ITREE._decorate tree[ '%self' ][ 'root' ]
   # search()
   show tree[ '%self' ][ 'root' ]
-  eq ( ITREE.find tree, 0 ), []
-  eq ( ITREE.find tree, 1 ), [[1,3,"H"]]
-  eq ( ITREE.find tree, 2 ), [[2,14,"D"],[1,3,"H"]]
-  eq ( ITREE.find tree, 3 ), [[3,7,"A"],[2,14,"D"],[1,3,"H"]]
-  eq ( ITREE.find tree, 4 ), [[3,7,"A"],[2,14,"D"]]
-  eq ( ITREE.find tree, 5 ), [[5,7,"B"],[3,7,"A"],[2,14,"D"]]
-  eq ( ITREE.find tree, 6 ), [[5,7,"B"],[3,7,"A"],[2,14,"D"]]
-  eq ( ITREE.find tree, 7 ), [[5,7,"B"],[3,7,"A"],[2,14,"D"]]
-  eq ( ITREE.find tree, 8 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 9 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 10 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 11 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 12 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 13 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 14 ), [[2,14,"D"],[8,22,"G"]]
-  eq ( ITREE.find tree, 15 ), [[8,22,"G"]]
-  eq ( ITREE.find tree, 16 ), [[8,22,"G"]]
-  eq ( ITREE.find tree, 17 ), [[8,22,"G"]]
-  eq ( ITREE.find tree, 18 ), [[8,22,"G"]]
+  error_count = 0
+  error_count += eq ( find tree, 0 ), ''
+  error_count += eq ( find tree, 1 ), 'A'
+  error_count += eq ( find tree, 2 ), 'B,A'
+  error_count += eq ( find tree, 3 ), 'B,A,C'
+  error_count += eq ( find tree, 4 ), 'D,B,C'
+  error_count += eq ( find tree, 5 ), 'B,C,E'
+  error_count += eq ( find tree, 6 ), 'B,C,E'
+  error_count += eq ( find tree, 7 ), 'B,C,E'
+  error_count += eq ( find tree, 8 ), 'B,F1,F2,G'
+  error_count += eq ( find tree, 9 ), 'B,F1,F2,G'
+  error_count += eq ( find tree, 10 ), 'B,F1,F2,G,H'
+  error_count += eq ( find tree, 11 ), 'B,F1,F2,G,H'
+  error_count += eq ( find tree, 12 ), 'B,F1,F2,G,H'
+  error_count += eq ( find tree, 13 ), 'B,G,H'
+  error_count += eq ( find tree, 14 ), 'B,G'
+  error_count += eq ( find tree, 15 ), 'G'
+  error_count += eq ( find tree, 16 ), 'G'
+  error_count += eq ( find tree, 17 ), 'G'
+  error_count += eq ( find tree, 18 ), 'G'
+  # debug rpr find tree, 0
+  # debug rpr find tree, 1
+  # debug rpr find tree, 2
+  # debug rpr find tree, 3
+  # debug rpr find tree, 4
+  # debug rpr find tree, 5
+  # debug rpr find tree, 6
+  # debug rpr find tree, 7
+  # debug rpr find tree, 8
+  # debug rpr find tree, 9
+  # debug rpr find tree, 10
+  # debug rpr find tree, 11
+  # debug rpr find tree, 12
+  # debug rpr find tree, 13
+  # debug rpr find tree, 14
+  # debug rpr find tree, 15
+  # debug rpr find tree, 16
+  # debug rpr find tree, 17
+  # debug rpr find tree, 18
   # ITREE.add_interval tree, [ 10, 13, 'FF' ]
   # search()
+  throw Error "there were #{error_count} errors" unless error_count is 0
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ 'test interval tree 2' ] = ->
+  tree      = ITREE.new_tree()
+  intervals = [
+    [ 17, 19, 'A', ]
+    [  5,  8, 'B', ]
+    [ 21, 24, 'C', ]
+    [  4,  8, 'D', ]
+    [ 15, 18, 'E', ]
+    [  7, 10, 'F', ]
+    [ 16, 22, 'G', ]
+    ]
+  ITREE.add_interval tree, interval for interval in intervals
+  ITREE._decorate tree[ '%self' ][ 'root' ]
+  # search()
+  show tree[ '%self' ][ 'root' ]
+  error_count = 0
+  # error_count += eq ( find tree, 0 ), ''
+  # debug rpr find tree, [ 23, 25, ] # 'C'
+  # debug rpr find tree, [ 12, 14, ] # ''
+  # debug rpr find tree, [ 21, 23, ] # 'G,C'
+  debug rpr find tree, [ 8, 9, ] # 'B,D,F'
+  debug rpr find tree, [  5,  8, ]
+  debug rpr find tree, [ 21, 24, ]
+  debug rpr find tree, [  4,  8, ]
+  # search()
+  throw Error "there were #{error_count} errors" unless error_count is 0
   return null
 
 
