@@ -28,6 +28,7 @@
     "equals": "^1.0.0",
     "es6-shim": "^0.32.2",
     "functional-red-black-tree": "^1.0.1",
+    "interval-skip-list": "^2.0.1",
     "lodash": "^3.2.0",
     "permute": "^1.0.0"
   },

@@ -7,7 +7,7 @@ rpr                       = njs_util.inspect
 @TSORT                    = require './TSORT'
 @BLOOM                    = require './BLOOM'
 @columnify                = require 'columnify'
-@INTERVALTREE             = require './INTERVALTREE'
+@INTERSKIPLIST            = require './INTERSKIPLIST'
 
 #===========================================================================================================
 # ACQUISITION
