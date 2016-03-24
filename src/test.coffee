@@ -22,34 +22,35 @@ echo                      = TRM.echo.bind TRM
 #...........................................................................................................
 CND                       = require './main'
 SL                        = CND.INTERSKIPLIST
+test                      = require 'guy-test'
 
+
+# #-----------------------------------------------------------------------------------------------------------
+# eq = ( P... ) =>
+#   whisper P
+#   # throw new Error "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}" unless CND.equals P...
+#   unless CND.equals P...
+#     warn "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}"
+#     return 1
+#   return 0
+
+# #-----------------------------------------------------------------------------------------------------------
+# @_test = ->
+#   error_count = 0
+#   for name, method of @
+#     continue if name.startsWith '_'
+#     whisper name
+#     try
+#       method()
+#     catch error
+#       # throw error
+#       error_count += +1
+#       warn error[ 'message' ]
+#   help "tests completed successfully" if error_count is 0
+#   process.exit error_count
 
 #-----------------------------------------------------------------------------------------------------------
-eq = ( P... ) =>
-  whisper P
-  # throw new Error "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}" unless CND.equals P...
-  unless CND.equals P...
-    warn "not equal: \n#{( ( rpr p ) for p in P ).join '\n'}"
-    return 1
-  return 0
-
-#-----------------------------------------------------------------------------------------------------------
-@_test = ->
-  error_count = 0
-  for name, method of @
-    continue if name.startsWith '_'
-    whisper name
-    try
-      method()
-    catch error
-      # throw error
-      error_count += +1
-      warn error[ 'message' ]
-  help "tests completed successfully" if error_count is 0
-  process.exit error_count
-
-#-----------------------------------------------------------------------------------------------------------
-@[ 'test interval tree 1' ] = ->
+@[ 'test interval tree 1' ] = ( T ) ->
   find      = ( skiplist, probe ) ->
     R = SL.find_any_ids skiplist, probe
     R.sort()
@@ -69,26 +70,25 @@ eq = ( P... ) =>
   for [ lo, hi, id, value, ] in intervals
     SL.add_interval skiplist, lo, hi, id, value
   # search()
-  error_count = 0
-  error_count += eq ( find skiplist, 0 ), ''
-  error_count += eq ( find skiplist, 1 ), 'A'
-  error_count += eq ( find skiplist, 2 ), 'A,B'
-  error_count += eq ( find skiplist, 3 ), 'A,B,C'
-  error_count += eq ( find skiplist, 4 ), 'B,C,D'
-  error_count += eq ( find skiplist, 5 ), 'B,C,E'
-  error_count += eq ( find skiplist, 6 ), 'B,C,E'
-  error_count += eq ( find skiplist, 7 ), 'B,C,E'
-  error_count += eq ( find skiplist, 8 ), 'B,F1,F2,G'
-  error_count += eq ( find skiplist, 9 ), 'B,F1,F2,G'
-  error_count += eq ( find skiplist, 10 ), 'B,F1,F2,G,H'
-  error_count += eq ( find skiplist, 11 ), 'B,F1,F2,G,H'
-  error_count += eq ( find skiplist, 12 ), 'B,F1,F2,G,H'
-  error_count += eq ( find skiplist, 13 ), 'B,G,H'
-  error_count += eq ( find skiplist, 14 ), 'B,G'
-  error_count += eq ( find skiplist, 15 ), 'G'
-  error_count += eq ( find skiplist, 16 ), 'G'
-  error_count += eq ( find skiplist, 17 ), 'G'
-  error_count += eq ( find skiplist, 18 ), 'G'
+  T.eq ( find skiplist, 0 ), ''
+  T.eq ( find skiplist, 1 ), 'A'
+  T.eq ( find skiplist, 2 ), 'A,B'
+  T.eq ( find skiplist, 3 ), 'A,B,C'
+  T.eq ( find skiplist, 4 ), 'B,C,D'
+  T.eq ( find skiplist, 5 ), 'B,C,E'
+  T.eq ( find skiplist, 6 ), 'B,C,E'
+  T.eq ( find skiplist, 7 ), 'B,C,E'
+  T.eq ( find skiplist, 8 ), 'B,F1,F2,G'
+  T.eq ( find skiplist, 9 ), 'B,F1,F2,G'
+  T.eq ( find skiplist, 10 ), 'B,F1,F2,G,H'
+  T.eq ( find skiplist, 11 ), 'B,F1,F2,G,H'
+  T.eq ( find skiplist, 12 ), 'B,F1,F2,G,H'
+  T.eq ( find skiplist, 13 ), 'B,G,H'
+  T.eq ( find skiplist, 14 ), 'B,G'
+  T.eq ( find skiplist, 15 ), 'G'
+  T.eq ( find skiplist, 16 ), 'G'
+  T.eq ( find skiplist, 17 ), 'G'
+  T.eq ( find skiplist, 18 ), 'G'
   # debug rpr find skiplist, 0
   # debug rpr find skiplist, 1
   # debug rpr find skiplist, 2
@@ -110,7 +110,6 @@ eq = ( P... ) =>
   # debug rpr find skiplist, 18
   # SL.add_interval skiplist, [ 10, 13, 'FF' ]
   # search()
-  throw Error "there were #{error_count} errors" unless error_count is 0
   return null
 
 #-----------------------------------------------------------------------------------------------------------
@@ -142,8 +141,52 @@ eq = ( P... ) =>
   throw Error "there were #{error_count} errors" unless error_count is 0
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ 'test type_of' ] = ( T ) ->
+  T.eq ( CND.type_of new WeakMap()            ), 'weakmap'
+  T.eq ( CND.type_of new Map()                ), 'map'
+  T.eq ( CND.type_of new Set()                ), 'set'
+  T.eq ( CND.type_of new Date()               ), 'date'
+  T.eq ( CND.type_of new Error()              ), 'error'
+  T.eq ( CND.type_of []                       ), 'list'
+  T.eq ( CND.type_of true                     ), 'boolean'
+  T.eq ( CND.type_of false                    ), 'boolean'
+  T.eq ( CND.type_of ( -> )                   ), 'function'
+  T.eq ( CND.type_of ( -> yield 123 )()       ), 'generator'
+  T.eq ( CND.type_of null                     ), 'null'
+  T.eq ( CND.type_of 'helo'                   ), 'text'
+  T.eq ( CND.type_of undefined                ), 'undefined'
+  T.eq ( CND.type_of arguments                ), 'arguments'
+  T.eq ( CND.type_of global                   ), 'global'
+  T.eq ( CND.type_of /^xxx$/g                 ), 'regex'
+  T.eq ( CND.type_of {}                       ), 'pod'
+  T.eq ( CND.type_of NaN                      ), 'nan'
+  T.eq ( CND.type_of 1 / 0                    ), 'infinity'
+  T.eq ( CND.type_of -1 / 0                   ), 'infinity'
+  T.eq ( CND.type_of 12345                    ), 'number'
+  T.eq ( CND.type_of new Buffer 'helo'        ), 'buffer'
+  T.eq ( CND.type_of new ArrayBuffer 42       ), 'arraybuffer'
+  return null
+
+
+#===========================================================================================================
+# MAIN
+#-----------------------------------------------------------------------------------------------------------
+@_main = ( handler ) ->
+  test @, 'timeout': 2500
+
+#-----------------------------------------------------------------------------------------------------------
+@_prune = ->
+  for name, value of @
+    continue if name.startsWith '_'
+    delete @[ name ] unless name in include
+  return null
 
 ############################################################################################################
 unless module.parent?
-  @_test()
+  include = [
+    'test type_of'
+    ]
+  # @_prune()
+  @_main()
 

@@ -24,13 +24,15 @@
   "homepage": "https://github.com/loveencounterflow/cnd",
   "dependencies": {
     "bloem": "^0.2.4",
-    "columnify": "^1.4.1",
-    "equals": "^1.0.0",
-    "es6-shim": "^0.32.2",
+    "columnify": "^1.5.4",
+    "equals": "^1.0.1",
+    "es6-shim": "^0.35.0",
     "functional-red-black-tree": "^1.0.1",
     "interval-skip-list": "^2.0.1",
     "lodash": "^3.2.0",
     "permute": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "guy-test": "^1.1.2"
+  }
 }

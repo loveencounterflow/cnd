@@ -16,48 +16,50 @@ isBuffer                  = Buffer.isBuffer ? njs_util.isBuffer
 #-----------------------------------------------------------------------------------------------------------
 @_coffeenode_type_by_js_type =
   '[object Array]':                     'list'
-  '[object Boolean]':                   'boolean'
+  # '[object Boolean]':                   'boolean'
   '[object Function]':                  'function'
-  '[object Null]':                      'null'
+  # '[object Null]':                      'null'
   '[object String]':                    'text'
   #.........................................................................................................
   '[object Generator]':                 'generator'
   #.........................................................................................................
-  '[object Undefined]':                 'jsundefined'
-  '[object Arguments]':                 'jsarguments'
-  '[object Date]':                      'jsdate'
-  '[object Error]':                     'jserror'
-  '[object global]':                    'jsglobal'
-  '[object RegExp]':                    'jsregex'
-  '[object DOMWindow]':                 'jswindow'
-  '[object CanvasRenderingContext2D]':  'jsctx'
-  '[object ArrayBuffer]':               'jsarraybuffer'
+  # '[object Undefined]':                 'jsundefined'
+  '[object Arguments]':                 'arguments'
+  '[object Date]':                      'date'
+  '[object Error]':                     'error'
+  '[object global]':                    'global'
+  '[object RegExp]':                    'regex'
+  '[object DOMWindow]':                 'window'
+  '[object CanvasRenderingContext2D]':  'canvasrenderingcontext2d'
+  '[object ArrayBuffer]':               'arraybuffer'
   #.........................................................................................................
   '[object Object]': ( x ) ->
-    return 'jsbuffer' if isBuffer x
+    return 'buffer' if isBuffer x
     return 'pod'
   #.........................................................................................................
   '[object Number]': ( x ) ->
     ### TAINT isNaN is broken as per https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN#Description ###
-    return 'jsnotanumber' if isNaN x
-    return 'jsinfinity'   if x == Infinity or x == -Infinity
+    return 'nan' if isNaN x
+    # return 'jsinfinity'   if x == Infinity or x == -Infinity
     return 'number'
 
 #-----------------------------------------------------------------------------------------------------------
 @type_of = ( x ) ->
   """Given any kind of value ``x``, return its type."""
   #.........................................................................................................
-  # validate_argument_count_equals 1
-  #.........................................................................................................
-  return 'null'         if x is null
-  return 'jsundefined'  if x is undefined
+  switch x
+    when null                       then return 'null'
+    when undefined                  then return 'undefined'
+    when true, false                then return 'boolean'
+    when -Infinity, Infinity        then return 'infinity'
   #.........................................................................................................
   R = x[ '~isa' ]
   return R if R?
   #.........................................................................................................
+  return 'buffer' if Buffer.isBuffer x
   js_type = js_type_of x
   R       = @_coffeenode_type_by_js_type[ js_type ]
-  return js_type.replace /^\[object (.+)\]$/, '$1' unless R?
+  return ( js_type.replace /^\[object (.+)\]$/, '$1' ).toLowerCase() unless R?
   return if @isa_function R then R x else R
 
 #-----------------------------------------------------------------------------------------------------------
