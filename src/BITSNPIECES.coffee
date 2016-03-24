@@ -9,7 +9,7 @@ permute                   = require 'permute'
 @test                     = require './test'
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
-
+CND                       = require './main'
 
 #-----------------------------------------------------------------------------------------------------------
 @equals = ( P... ) ->
@@ -554,32 +554,50 @@ validate_isa_number = ( x ) ->
 @last_of    = ( collection ) -> collection[ collection.length - 1 ]
 
 
+
 #===========================================================================================================
-# OBJECT BYTE SIZES
+# OBJECT SIZES
 #-----------------------------------------------------------------------------------------------------------
-@size_of = ( x ) -> @_size_of x, new Map()
-
-#-----------------------------------------------------------------------------------------------------------
-@_size_of = ( x, seen ) ->
-  CND   = require './main'
-  R     = 0
-  return R if seen.has x
-  seen.set x, 1
+@size_of = ( x, settings ) ->
   switch type = CND.type_of x
-    when 'boolean'                      then  R += 4
-    when 'null', 'jsundefined', 'jsnan' then  R += 1
-    when 'text', 'jsbuffer'             then  R += x.length * 2
-    when 'number'                       then  R += 8
-    else                                      R += @_size_of_container x, seen
-  return R
+    when 'list', 'arguments', 'buffer' then return x.length
+    when 'text'
+      switch selector = settings?[ 'count' ] ? 'codeunits'
+        when 'codepoints' then return ( Array.from x ).length
+        when 'codeunits'  then return x.length
+        when 'bytes'      then return Buffer.byteLength x, ( settings?[ 'encoding' ] ? 'utf-8' )
+        else throw new Error "unknown counting selector #{rpr selector}"
+    when 'set', 'map'     then return x.size
+  if CND.isa_pod x then return ( Object.keys x ).length
+  throw new Error "unable to get size of a #{type}"
 
-#-----------------------------------------------------------------------------------------------------------
-@_size_of_container = ( x, seen ) ->
-  seen.set x, 1
-  R = 0
-  for key in Object.keys x
-    R += @_size_of x[ key ], seen
-  return R
+
+# #===========================================================================================================
+# # OBJECT BYTE SIZES
+# #-----------------------------------------------------------------------------------------------------------
+# @size_of = ( x ) -> @_size_of x, new Map()
+
+# #-----------------------------------------------------------------------------------------------------------
+# @_size_of = ( x, seen ) ->
+#   CND   = require './main'
+#   R     = 0
+#   return R if seen.has x
+#   seen.set x, 1
+#   switch type = CND.type_of x
+#     when 'boolean'                      then  R += 4
+#     when 'null', 'jsundefined', 'jsnan' then  R += 1
+#     when 'text', 'jsbuffer'             then  R += x.length * 2
+#     when 'number'                       then  R += 8
+#     else                                      R += @_size_of_container x, seen
+#   return R
+
+# #-----------------------------------------------------------------------------------------------------------
+# @_size_of_container = ( x, seen ) ->
+#   seen.set x, 1
+#   R = 0
+#   for key in Object.keys x
+#     R += @_size_of x[ key ], seen
+#   return R
 
 #===========================================================================================================
 # NETWORK
