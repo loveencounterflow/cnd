@@ -13,7 +13,7 @@ CND                       = require './main'
 
 #-----------------------------------------------------------------------------------------------------------
 @equals = ( P... ) ->
-  ### TAINT `assert.deepEqual` is broken as of https://github.com/joyent/node/issues/7161 ###
+  ### `assert.deepEqual` is broken as of https://github.com/joyent/node/issues/7161 ###
   throw new Error "expected at least 2 arguments, got #{arity}" unless ( arity = P.length ) > 1
   return ( require 'equals' ) P...
 
