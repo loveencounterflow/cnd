@@ -12,17 +12,6 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-
-- [cnd](#cnd)
-	- [CND Interval Tree](#cnd-interval-tree)
-	- [CND Shim](#cnd-shim)
-	- [CND TSort](#cnd-tsort)
-		- [TSort API](#tsort-api)
-		- [Some TDOP Links](#some-tdop-links)
-
-> **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-
 # cnd
 
 a grab-bag NodeJS package mainly for functionalities that used to live in
