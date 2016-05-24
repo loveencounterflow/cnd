@@ -6,6 +6,7 @@ rpr                       = njs_util.inspect
 @LODASH                   = require 'lodash'
 @TSORT                    = require './TSORT'
 @BLOOM                    = require './BLOOM'
+@XJSON                    = require './XJSON'
 @columnify                = require 'columnify'
 @INTERSKIPLIST            = require './INTERSKIPLIST'
 
@@ -13,7 +14,7 @@ rpr                       = njs_util.inspect
 # ACQUISITION
 #-----------------------------------------------------------------------------------------------------------
 method_count  = 0
-routes        = [ './TRM', './BITSNPIECES', './TYPES', './SHIM', './XJSON', ]
+routes        = [ './TRM', './BITSNPIECES', './TYPES', './SHIM', ]
 #...........................................................................................................
 for route in routes
   for name, value of module = require route
