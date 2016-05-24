@@ -193,6 +193,24 @@ test                      = require 'guy-test'
   T.eq ( CND.size_of { 'foo': 42, 'bar': 108, 'baz': 3, }                           ), 3
   T.eq ( CND.size_of { '~isa': 'XYZ/yadda', 'foo': 42, 'bar': 108, 'baz': 3, }      ), 4
 
+#-----------------------------------------------------------------------------------------------------------
+@[ 'XJSON' ] = ( T ) ->
+  CND.XJSON = require './XJSON'
+  e         = new Set 'xy'
+  e.add new Set 'abc'
+  d         = [ 'A', 'B', e, ]
+  help d
+  # debug HOLLERITH.CODEC.encode d
+  # debug HOLLERITH.CODEC.decode HOLLERITH.CODEC.encode d
+  # help JSON.stringify d
+  # help JSON.stringify d, @replacer
+  # urge JSON.parse ( JSON.stringify d, @replacer ), @reviver
+  info CND.XJSON.stringify d
+  info CND.XJSON.parse CND.XJSON.stringify d
+  T.eq (     CND.XJSON.stringify d                 ), """["A","B",{"~isa":"set","%self":["x","y",{"~isa":"set","%self":["a","b","c"]}]}]"""
+  ### TAINT doing string comparison here to avoid implicit test that T.eq deals with sets correctly ###
+  T.eq ( rpr CND.XJSON.parse CND.XJSON.stringify d ), """[ 'A', 'B', Set { 'x', 'y', Set { 'a', 'b', 'c' } } ]"""
+
 
 #===========================================================================================================
 # MAIN
@@ -210,8 +228,9 @@ test                      = require 'guy-test'
 ############################################################################################################
 unless module.parent?
   include = [
-    'test type_of'
+    # 'test type_of'
+    'XJSON'
     ]
-  # @_prune()
+  @_prune()
   @_main()
 

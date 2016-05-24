@@ -13,7 +13,7 @@ rpr                       = njs_util.inspect
 # ACQUISITION
 #-----------------------------------------------------------------------------------------------------------
 method_count  = 0
-routes        = [ './TRM', './BITSNPIECES', './TYPES', './SHIM', ]
+routes        = [ './TRM', './BITSNPIECES', './TYPES', './SHIM', './XJSON', ]
 #...........................................................................................................
 for route in routes
   for name, value of module = require route

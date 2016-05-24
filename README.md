@@ -8,6 +8,7 @@
   - [CND TSort](#cnd-tsort)
     - [TSort API](#tsort-api)
     - [Some TDOP Links](#some-tdop-links)
+  - [XJSON](#xjson)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -312,3 +313,20 @@ console.log '14', ( TS.precedence_of graph, 'f|$'  ) < ( TS.precedence_of graph,
 * [The same as an HTML page: http://tdop.github.io/](http://tdop.github.io/)
 * [Simple Top-Down Parsing in Python: http://effbot.org/zone/simple-top-down-parsing.htm](http://effbot.org/zone/simple-top-down-parsing.htm)
 * [Douglas Crockford on TDOP: http://javascript.crockford.com/tdop/tdop.html](http://javascript.crockford.com/tdop/tdop.html)
+
+## XJSON
+
+```coffee
+  e         = new Set 'xy'
+  e.add new Set 'abc'
+  d         = [ 'A', 'B', e, ]
+  info CND.XJSON.stringify d
+  info CND.XJSON.parse CND.XJSON.stringify d
+```
+
+Output:
+
+```coffee
+["A","B",{"~isa":"set","%self":["x","y",{"~isa":"set","%self":["a","b","c"]}]}]
+[ 'A', 'B', Set { 'x', 'y', Set { 'a', 'b', 'c' } } ]
+```
