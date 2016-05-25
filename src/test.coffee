@@ -231,6 +231,6 @@ unless module.parent?
     # 'test type_of'
     'XJSON'
     ]
-  @_prune()
+  # @_prune()
   @_main()
 
