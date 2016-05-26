@@ -31,6 +31,6 @@
     "permute": "^1.0.0"
   },
   "devDependencies": {
-    "guy-test": "^1.1.2"
+    "guy-test": "^1.1.3"
   }
 }
