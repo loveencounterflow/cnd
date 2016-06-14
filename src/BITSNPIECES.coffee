@@ -614,30 +614,30 @@ validate_isa_number = ( x ) ->
 #===========================================================================================================
 # SETS
 #-----------------------------------------------------------------------------------------------------------
-@is_subset = ( a, b ) ->
-  ### Return whether `b` is a subset of `a`; this is true if each element of `b` is also
-  an element of `a`. ###
-  type_of_a = CND.type_of a
-  type_of_b = CND.type_of b
-  unless type_of_a is type_of_b
-    throw new Error "expected two arguments of same type, got #{type_of_a} and #{type_of_b}"
-  switch type_of_a
+@is_subset = ( subset, superset ) ->
+  ### `is_subset subset, superset` returns whether `subset` is a subset of `superset`; this is true if each
+  element of `subset` is also an element of `superset`. ###
+  type_of_sub   = CND.type_of subset
+  type_of_super = CND.type_of superset
+  unless type_of_sub is type_of_super
+    throw new Error "expected two arguments of same type, got #{type_of_sub} and #{type_of_super}"
+  switch type_of_sub
     when 'list'
-      return false unless b.length <= a.length
-      for element in b
-        return false unless element in a
+      return false unless subset.length <= superset.length
+      for element in subset
+        return false unless element in superset
       return true
     when 'set'
-      return false unless b.size <= a.size
-      iterator = b.values()
+      return false unless subset.size <= superset.size
+      iterator = subset.values()
       loop
         { value, done, } = iterator.next()
         return true if done
-        return false unless a.has value
+        return false unless superset.has value
       # for element in
-      #   return false unless element in a
+      #   return false unless element in subset
       return true
     else
-      throw new Error "expected lists or sets, got #{type_of_a} and #{type_of_b}"
+      throw new Error "expected lists or sets, got #{type_of_sub} and #{type_of_super}"
   return null
 
