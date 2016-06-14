@@ -611,3 +611,33 @@ validate_isa_number = ( x ) ->
         R.push description[ 'address' ]
   return R
 
+#===========================================================================================================
+# SETS
+#-----------------------------------------------------------------------------------------------------------
+@is_subset = ( a, b ) ->
+  ### Return whether `b` is a subset of `a`; this is true if each element of `b` is also
+  an element of `a`. ###
+  type_of_a = CND.type_of a
+  type_of_b = CND.type_of b
+  unless type_of_a is type_of_b
+    throw new Error "expected two arguments of same type, got #{type_of_a} and #{type_of_b}"
+  switch type_of_a
+    when 'list'
+      return false unless b.length <= a.length
+      for element in b
+        return false unless element in a
+      return true
+    when 'set'
+      return false unless b.size <= a.size
+      iterator = b.values()
+      loop
+        { value, done, } = iterator.next()
+        return true if done
+        return false unless a.has value
+      # for element in
+      #   return false unless element in a
+      return true
+    else
+      throw new Error "expected lists or sets, got #{type_of_a} and #{type_of_b}"
+  return null
+

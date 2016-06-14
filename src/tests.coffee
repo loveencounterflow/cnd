@@ -211,6 +211,23 @@ test                      = require 'guy-test'
   ### TAINT doing string comparison here to avoid implicit test that T.eq deals with sets correctly ###
   T.eq ( rpr CND.XJSON.parse CND.XJSON.stringify d ), """[ 'A', 'B', Set { 'x', 'y', Set { 'a', 'b', 'c' } } ]"""
 
+#-----------------------------------------------------------------------------------------------------------
+@[ 'is_subset' ] = ( T ) ->
+  T.eq false, CND.is_subset ( Array.from 'abcd' ), ( Array.from 'abcde' )
+  T.eq false, CND.is_subset ( Array.from 'abcd' ), ( Array.from 'abcx' )
+  T.eq false, CND.is_subset ( [] ), ( Array.from 'abcd' )
+  T.eq true,  CND.is_subset ( Array.from 'abcd' ), ( Array.from 'abcd' )
+  T.eq true,  CND.is_subset ( Array.from 'abcd' ), ( Array.from 'abc' )
+  T.eq true,  CND.is_subset ( Array.from 'abcd' ), ( [] )
+  T.eq true,  CND.is_subset ( Array.from [] ), ( [] )
+  T.eq false, CND.is_subset ( new Set 'abcd' ), ( new Set 'abcde' )
+  T.eq false, CND.is_subset ( new Set 'abcd' ), ( new Set 'abcx' )
+  T.eq false, CND.is_subset ( new Set() ), ( new Set 'abcx' )
+  T.eq true,  CND.is_subset ( new Set 'abcd' ), ( new Set 'abcd' )
+  T.eq true,  CND.is_subset ( new Set 'abcd' ), ( new Set 'abc' )
+  T.eq true,  CND.is_subset ( new Set 'abcd' ), ( new Set() )
+  T.eq true,  CND.is_subset ( new Set() ), ( new Set() )
+
 
 #===========================================================================================================
 # MAIN
