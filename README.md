@@ -330,3 +330,109 @@ Output:
 ["A","B",{"~isa":"set","%self":["x","y",{"~isa":"set","%self":["a","b","c"]}]}]
 [ 'A', 'B', Set { 'x', 'y', Set { 'a', 'b', 'c' } } ]
 ```
+
+## CND.TEXT.to_width
+
+```
+2
+|北|2
+|P |2
+|Pe|2
+|……|2
+|P…|2
+|a…|2
+|x…|2
+|a…|2
+|a…|2
+|……|2
+|……|2
+3
+|北 |3
+|P  |3
+|Pe |3
+|北…|3
+|Pe…|3
+|a …|3
+|xa…|3
+|àx…|4
+|a⃝b…|4
+|北…|3
+|北…|3
+4
+|北  |4
+|P   |4
+|Pe  |4
+|北京|4
+|Pek…|4
+|a n…|4
+|xàx…|5
+|àxa…|5
+|a⃝b⃞c…|6
+|北……|4
+|北……|4
+5
+|北   |5
+|P    |5
+|Pe   |5
+|北京 |5
+|Peki…|5
+|a ni…|5
+|xàxa…|6
+|àxáx…|7
+|a⃝b⃞c⃟a…|8
+|北京…|5
+|北京…|5
+10
+|北        |10
+|P         |10
+|Pe        |10
+|北京      |10
+|Peking    |10
+|a nice te…|10
+|xàxáxâxãx…|14
+|àxáxâxãxa…|14
+|a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c…|18
+|北京 (Pek…|10
+|北京 (Pek…|10
+15
+|北             |15
+|P              |15
+|Pe             |15
+|北京           |15
+|Peking         |15
+|a nice test to…|15
+|xàxáxâxãxāxa̅xa…|21
+|àxáxâxãxāxa̅xăx…|22
+|a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c⃟…|25
+|北京 (Peking) …|15
+|北京 (Peking) …|15
+20
+|北                  |20
+|P                   |20
+|Pe                  |20
+|北京                |20
+|Peking              |20
+|a nice test to see …|20
+|xàxáxâxãxāxa̅xăxȧxax…|28
+|àxáxâxãxāxa̅xăxȧxaxa…|28
+|a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c⃟…|25
+|北京 (Peking) 位於……|20
+|北京 (Peking) 位於……|20
+25
+|北                       |25
+|P                        |25
+|Pe                       |25
+|北京                     |25
+|Peking                   |25
+|a nice test to see the e…|25
+|xàxáxâxãxāxa̅xăxȧxaxa̠xa̡xa…|35
+|àxáxâxãxāxa̅xăxȧxaxa̠xa̡xa̢x…|36
+|a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c⃟a⃝b⃞c⃟ |25
+|北京 (Peking) 位於華北 (…|25
+|北京 (Peking) 位於華北 (…|25
+0         1         2         3
+0123456789012345678901234567890123456789
+a nice test to see the effect*
+北京 (Peking) 位於華北 (North*
+北京 (Peking) 位於華北 (North*
+```
