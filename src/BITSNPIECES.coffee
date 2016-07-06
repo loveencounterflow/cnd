@@ -5,7 +5,6 @@
 njs_path                  = require 'path'
 njs_fs                    = require 'fs'
 # LODASH                    = require 'lodash'
-permute                   = require 'permute'
 # @test                     = require './test'
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
@@ -105,42 +104,42 @@ CND                       = require './main'
   #.........................................................................................................
   return list
 
-#-----------------------------------------------------------------------------------------------------------
-@ez_permute = ( list ) ->
-  ### A wrapper of [Ben Noordhuis's `permute`](https://github.com/bnoordhuis/node-permute), this method
-  provides permutations of value in a list. It has been given the `ez` prefix to indicate that while
-  it is straightforward to use, it's range of applicability is also somewhat limited.
+# #-----------------------------------------------------------------------------------------------------------
+# @ez_permute = ( list ) ->
+#   ### A wrapper of [Ben Noordhuis's `permute`](https://github.com/bnoordhuis/node-permute), this method
+#   provides permutations of value in a list. It has been given the `ez` prefix to indicate that while
+#   it is straightforward to use, it's range of applicability is also somewhat limited.
 
-  Basic usage looks like this:
+#   Basic usage looks like this:
 
-  ```coffee
-  demo_permute = ->
-    d   = [ 'A', 'B', 'C', ]
-    nr  = 0
-    loop
-      nr += +1
-      help nr, d
-      break unless BNP.ez_permute d
-  ```
+#   ```coffee
+#   demo_permute = ->
+#     d   = [ 'A', 'B', 'C', ]
+#     nr  = 0
+#     loop
+#       nr += +1
+#       help nr, d
+#       break unless BNP.ez_permute d
+#   ```
 
-  You will see 6 permutations, which is great:
+#   You will see 6 permutations, which is great:
 
-  ```
-  1 [ 'A', 'B', 'C' ]
-  2 [ 'A', 'C', 'B' ]
-  3 [ 'B', 'A', 'C' ]
-  4 [ 'B', 'C', 'A' ]
-  5 [ 'C', 'A', 'B' ]
-  6 [ 'C', 'B', 'A' ]
-  ```
+#   ```
+#   1 [ 'A', 'B', 'C' ]
+#   2 [ 'A', 'C', 'B' ]
+#   3 [ 'B', 'A', 'C' ]
+#   4 [ 'B', 'C', 'A' ]
+#   5 [ 'C', 'A', 'B' ]
+#   6 [ 'C', 'B', 'A' ]
+#   ```
 
-  So that's really E-Z. But, one may ask: how does `ez_permute` know when it's done all permuations? That's
-  where the limitations come in. What `ez_permute` really does is it nudges whatever sequence you throw at
-  it one step closer to being sorted in a descending order; accordingly, when you give it a sequence that
-  is shuffled, then you will get an indeterminate number of permutations; when you pass in a sequence sorted
-  in the reverse, you will get *no* additional permuation at all, because that's the final state of the
-  algorithm. ###
-  return permute list
+#   So that's really E-Z. But, one may ask: how does `ez_permute` know when it's done all permuations? That's
+#   where the limitations come in. What `ez_permute` really does is it nudges whatever sequence you throw at
+#   it one step closer to being sorted in a descending order; accordingly, when you give it a sequence that
+#   is shuffled, then you will get an indeterminate number of permutations; when you pass in a sequence sorted
+#   in the reverse, you will get *no* additional permuation at all, because that's the final state of the
+#   algorithm. ###
+#   return ( require 'permute' ) list
 
 
 
