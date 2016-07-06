@@ -337,4 +337,3 @@ ansi_vt100_cc_matcher = /(?:\x1b\x5b)([\?=;0-9]*?)([ABCDHJKfhlmnpsu])/g
   return R.join '\n'
 
 
-

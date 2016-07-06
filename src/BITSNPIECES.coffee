@@ -4,17 +4,9 @@
 ############################################################################################################
 njs_path                  = require 'path'
 njs_fs                    = require 'fs'
-# LODASH                    = require 'lodash'
-# @test                     = require './test'
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 CND                       = require './main'
-
-#-----------------------------------------------------------------------------------------------------------
-@equals = ( P... ) ->
-  ### `assert.deepEqual` is broken as of https://github.com/joyent/node/issues/7161 ###
-  throw new Error "expected at least 2 arguments, got #{arity}" unless ( arity = P.length ) > 1
-  return ( require 'equals' ) P...
 
 #-----------------------------------------------------------------------------------------------------------
 @format_number = ( n, grouper = "'" ) ->
@@ -44,7 +36,7 @@ CND                       = require './main'
 
 #-----------------------------------------------------------------------------------------------------------
 @find_all = ( text, matcher ) ->
-  ### `BAP.find_all` expects a `text` and a `matcher` (which must be a RegExp object); it returns a
+  ### `CND.find_all` expects a `text` and a `matcher` (which must be a RegExp object); it returns a
   (possibly empty) list of all matching parts in the text. If `matcher` does not have the `g` (global) flag
   set, a new RegExp object will be cloned behind the scenes, so passsing in a regular expression with `g`
   turned on may improve performance.
@@ -104,43 +96,6 @@ CND                       = require './main'
   #.........................................................................................................
   return list
 
-# #-----------------------------------------------------------------------------------------------------------
-# @ez_permute = ( list ) ->
-#   ### A wrapper of [Ben Noordhuis's `permute`](https://github.com/bnoordhuis/node-permute), this method
-#   provides permutations of value in a list. It has been given the `ez` prefix to indicate that while
-#   it is straightforward to use, it's range of applicability is also somewhat limited.
-
-#   Basic usage looks like this:
-
-#   ```coffee
-#   demo_permute = ->
-#     d   = [ 'A', 'B', 'C', ]
-#     nr  = 0
-#     loop
-#       nr += +1
-#       help nr, d
-#       break unless BNP.ez_permute d
-#   ```
-
-#   You will see 6 permutations, which is great:
-
-#   ```
-#   1 [ 'A', 'B', 'C' ]
-#   2 [ 'A', 'C', 'B' ]
-#   3 [ 'B', 'A', 'C' ]
-#   4 [ 'B', 'C', 'A' ]
-#   5 [ 'C', 'A', 'B' ]
-#   6 [ 'C', 'B', 'A' ]
-#   ```
-
-#   So that's really E-Z. But, one may ask: how does `ez_permute` know when it's done all permuations? That's
-#   where the limitations come in. What `ez_permute` really does is it nudges whatever sequence you throw at
-#   it one step closer to being sorted in a descending order; accordingly, when you give it a sequence that
-#   is shuffled, then you will get an indeterminate number of permutations; when you pass in a sequence sorted
-#   in the reverse, you will get *no* additional permuation at all, because that's the final state of the
-#   algorithm. ###
-#   return ( require 'permute' ) list
-
 
 
 #===========================================================================================================
@@ -184,8 +139,8 @@ CND                       = require './main'
   method will then always result in the same series of numbers. Here is a usage example that also shows how
   to reset the generator:
 
-      BAP = require 'coffeenode-bitsnpieces'
-      rnd = BAP.get_rnd() # or, say, `rnd = BAP.get_rnd 123, 0.5`
+      CND = require 'cnd'
+      rnd = CND.get_rnd() # or, say, `rnd = CND.get_rnd 123, 0.5`
       log rnd() for idx in [ 0 .. 5 ]
       log()
       rnd.reset()
@@ -342,61 +297,6 @@ validate_isa_number = ( x ) ->
     R               = null
   return R
 
-# #-----------------------------------------------------------------------------------------------------------
-# @get_caller_stack = ( delta = 0 ) ->
-#   return ( @get_caller_locators delta + 1 ).join '\n'
-
-# #-----------------------------------------------------------------------------------------------------------
-# @get_caller_locators = ( delta = 0 ) ->
-#   R = []
-#   #.........................................................................................................
-#   for cs in @get_V8_CallSite_objects delta + 1
-#     R.push "#{cs.getFileName()}/#{cs.getFunctionName()}##{cs.getLineNumber()}:#{cs.getColumnNumber()}"
-#   #.........................................................................................................
-#   return R
-
-# #-----------------------------------------------------------------------------------------------------------
-# @caller_description_from_locator = ( locator ) ->
-#   ### TAINT first we build string representations, then we parse them ###
-#   match = locator.match /^(.+)\/([^\/]+)#([0-9]+):([0-9]+)$/
-#   throw new Error "illegal stack locator #{rpr locator}" unless match?
-#   [ _
-#     route
-#     name
-#     line_nr_txt
-#     col_nr_txt  ] = match
-#   line_nr         = parseInt line_nr_txt, 10
-#   col_nr          = parseInt  col_nr_txt, 10
-#   R =
-#     'route':      route
-#     'name':       name
-#     'line-nr':    line_nr
-#     'col-nr':     col_nr
-#   R[ 'source' ]   = @_source_line_from_description R
-#   return R
-
-# #-----------------------------------------------------------------------------------------------------------
-# @get_caller_routes = ( delta = 0 ) ->
-#   call_sites = @get_V8_CallSite_objects delta + 1
-#   return ( cs.getFileName() for cs in call_sites )
-
-# #-----------------------------------------------------------------------------------------------------------
-# @get_filtered_caller_routes = ( delta = 0 ) ->
-#   call_sites  = @get_V8_CallSite_objects delta + 1
-#   seen_routes = {}
-#   R           = []
-#   #.........................................................................................................
-#   for cs in call_sites
-#     route = cs.getFileName()
-#     ### ignore all duplicate routes: ###
-#     continue if seen_routes[ route ]?
-#     seen_routes[ route ] = 1
-#     ### ignore all 'internal' routes (these typically have no slash, other routes being absolute): ###
-#     continue if ( route.indexOf '/' ) is -1
-#     R.push route
-#   #.........................................................................................................
-#   return R
-
 
 #===========================================================================================================
 # ID CREATION
@@ -439,7 +339,7 @@ validate_isa_number = ( x ) ->
   `create_rnd_id.rnd.reset()` and feeding `create_rnd_id` with the *same* user-specific inputs, we can still
   see the identical *same* IDs generated—which is great for testing.
 
-      create_rnd_id = BAP.get_create_rnd_id 1234, 87.23
+      create_rnd_id = CND.get_create_rnd_id 1234, 87.23
 
       # three different user IDs:
       log create_rnd_id [ 'foo@example.com' ], 12
@@ -571,32 +471,6 @@ validate_isa_number = ( x ) ->
   throw new Error "unable to get size of a #{type}"
 
 
-# #===========================================================================================================
-# # OBJECT BYTE SIZES
-# #-----------------------------------------------------------------------------------------------------------
-# @size_of = ( x ) -> @_size_of x, new Map()
-
-# #-----------------------------------------------------------------------------------------------------------
-# @_size_of = ( x, seen ) ->
-#   CND   = require './main'
-#   R     = 0
-#   return R if seen.has x
-#   seen.set x, 1
-#   switch type = CND.type_of x
-#     when 'boolean'                      then  R += 4
-#     when 'null', 'jsundefined', 'jsnan' then  R += 1
-#     when 'text', 'jsbuffer'             then  R += x.length * 2
-#     when 'number'                       then  R += 8
-#     else                                      R += @_size_of_container x, seen
-#   return R
-
-# #-----------------------------------------------------------------------------------------------------------
-# @_size_of_container = ( x, seen ) ->
-#   seen.set x, 1
-#   R = 0
-#   for key in Object.keys x
-#     R += @_size_of x[ key ], seen
-#   return R
 
 #===========================================================================================================
 # NETWORK
