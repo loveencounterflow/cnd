@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "BLOOM.js",
-  "sourceRoot": "../../cnd",
+  "sourceRoot": "..",
   "sources": [
     "src/BLOOM.coffee"
   ],
