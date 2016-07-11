@@ -3,12 +3,6 @@
 ############################################################################################################
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
-@LODASH                   = require 'lodash'
-@TSORT                    = require './TSORT'
-@BLOOM                    = require './BLOOM'
-@XJSON                    = require './XJSON'
-@columnify                = require 'columnify'
-@INTERSKIPLIST            = require './INTERSKIPLIST'
 
 #===========================================================================================================
 # ACQUISITION
