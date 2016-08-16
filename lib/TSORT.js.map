@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "TSORT.js",
-  "sourceRoot": "../../cnd",
+  "sourceRoot": "..",
   "sources": [
     "src/TSORT.coffee"
   ],

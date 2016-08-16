@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "TRM-CONSTANTS.js",
-  "sourceRoot": "../../cnd",
+  "sourceRoot": "..",
   "sources": [
     "src/TRM-CONSTANTS.coffee"
   ],

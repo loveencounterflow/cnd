@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "XJSON.js",
-  "sourceRoot": "../../cnd",
+  "sourceRoot": "..",
   "sources": [
     "src/XJSON.coffee"
   ],

@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "TYPES.js",
-  "sourceRoot": "../../cnd",
+  "sourceRoot": "..",
   "sources": [
     "src/TYPES.coffee"
   ],
