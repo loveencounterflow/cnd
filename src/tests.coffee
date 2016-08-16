@@ -135,6 +135,17 @@ test                      = require 'guy-test'
   T.eq true,  CND.is_subset ( new Set()          ), ( new Set 'abcd'    )
   T.eq true,  CND.is_subset ( new Set()          ), ( new Set()         )
 
+#-----------------------------------------------------------------------------------------------------------
+@[ 'deep_copy' ] = ( T ) ->
+  ### TAINT set comparison doesn't work ###
+  probe   = [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], { q: 'Q', s: 'S', }, ]
+  # probe   = [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], ( new Set Array.from 'abc' ), ]
+  # matcher = [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], ( new Set Array.from 'abc' ), ]
+  result  = CND.deep_copy probe
+  T.eq result, probe
+  T.ok result isnt probe
+  return null
+
 
 #===========================================================================================================
 # MAIN
