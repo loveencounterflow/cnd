@@ -5,7 +5,6 @@ rpr                       = ( x ) -> return ( require 'util' ).inspect x, false,
 #-----------------------------------------------------------------------------------------------------------
 njs_util                  = require 'util'
 js_type_of                = ( x ) -> return Object::toString.call x
-# type_features             = require 'COFFEENODE/Λ/registry/type-features'
 #...........................................................................................................
 ### There appear to have been some changes in NodeJS concerning where to find `isXY` methods: ###
 isBuffer                  = Buffer.isBuffer ? njs_util.isBuffer
