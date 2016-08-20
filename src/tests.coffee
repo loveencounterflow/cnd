@@ -49,7 +49,7 @@ test                      = require 'guy-test'
 #   process.exit error_count
 
 #-----------------------------------------------------------------------------------------------------------
-@[ 'test type_of' ] = ( T ) ->
+@[ "test type_of" ] = ( T ) ->
   T.eq ( CND.type_of new WeakMap()            ), 'weakmap'
   T.eq ( CND.type_of new Map()                ), 'map'
   T.eq ( CND.type_of new Set()                ), 'set'
@@ -76,7 +76,7 @@ test                      = require 'guy-test'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ 'test size_of' ] = ( T ) ->
+@[ "test size_of" ] = ( T ) ->
   # debug ( new Buffer '𣁬', ), ( '𣁬'.codePointAt 0 ).toString 16
   # debug ( new Buffer '𡉜', ), ( '𡉜'.codePointAt 0 ).toString 16
   # debug ( new Buffer '𠑹', ), ( '𠑹'.codePointAt 0 ).toString 16
@@ -101,25 +101,41 @@ test                      = require 'guy-test'
   T.eq ( CND.size_of { '~isa': 'XYZ/yadda', 'foo': 42, 'bar': 108, 'baz': 3, }      ), 4
 
 #-----------------------------------------------------------------------------------------------------------
-@[ 'XJSON' ] = ( T ) ->
+@[ "XJSON (1)" ] = ( T ) ->
   CND.XJSON = require './XJSON'
   e         = new Set 'xy'
   e.add new Set 'abc'
   d         = [ 'A', 'B', e, ]
-  help d
-  # debug HOLLERITH.CODEC.encode d
-  # debug HOLLERITH.CODEC.decode HOLLERITH.CODEC.encode d
-  # help JSON.stringify d
-  # help JSON.stringify d, @replacer
-  # urge JSON.parse ( JSON.stringify d, @replacer ), @reviver
-  info CND.XJSON.stringify d
-  info CND.XJSON.parse CND.XJSON.stringify d
-  T.eq (     CND.XJSON.stringify d                 ), """["A","B",{"~isa":"set","%self":["x","y",{"~isa":"set","%self":["a","b","c"]}]}]"""
+  T.eq (     CND.XJSON.stringify d                 ), """["A","B",{"~isa":"-x-set","%self":["x","y",{"~isa":"-x-set","%self":["a","b","c"]}]}]"""
   ### TAINT doing string comparison here to avoid implicit test that T.eq deals with sets correctly ###
   T.eq ( rpr CND.XJSON.parse CND.XJSON.stringify d ), """[ 'A', 'B', Set { 'x', 'y', Set { 'a', 'b', 'c' } } ]"""
+  return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ 'is_subset' ] = ( T ) ->
+@[ "XJSON (2)" ] = ( T ) ->
+  CND.XJSON = require './XJSON'
+  s   = new Set Array.from 'Popular Mechanics'
+  m   = new Map [ [ 'a', 1, ], [ 'b', 2, ], ]
+  f   = ( x ) -> x ** 2
+  d   = { s, m, f, }
+  #.........................................................................................................
+  d_json     = CND.XJSON.stringify d
+  d_ng       = CND.XJSON.parse     d_json
+  d_ng_json  = CND.XJSON.stringify d_ng
+  T.eq d_json, d_ng_json
+  #.........................................................................................................
+  ### TAINT using T.eq directly on values, not their alternative serialization would implicitly test whether
+  CND.equals accepts sets and maps ###
+  T.eq ( rpr d_ng[ 's' ] ), ( rpr d[ 's' ] )
+  T.eq ( rpr d_ng[ 'm' ] ), ( rpr d[ 'm' ] )
+  T.eq d_ng[ 'f' ], d[ 'f' ]
+  T.eq ( d_ng[ 'f' ] 12 ), ( d[ 'f' ] 12 )
+  T.eq ( d_ng[ 'f' ] 12 ), 144
+  #.........................................................................................................
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "is_subset" ] = ( T ) ->
   T.eq false, CND.is_subset ( Array.from 'abcde' ), ( Array.from 'abcd' )
   T.eq false, CND.is_subset ( Array.from 'abcx'  ), ( Array.from 'abcd' )
   T.eq false, CND.is_subset ( Array.from 'abcd'  ), ( []                )
@@ -134,16 +150,22 @@ test                      = require 'guy-test'
   T.eq true,  CND.is_subset ( new Set 'abc'      ), ( new Set 'abcd'    )
   T.eq true,  CND.is_subset ( new Set()          ), ( new Set 'abcd'    )
   T.eq true,  CND.is_subset ( new Set()          ), ( new Set()         )
+  #.........................................................................................................
+  return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ 'deep_copy' ] = ( T ) ->
+@[ "deep_copy" ] = ( T ) ->
   ### TAINT set comparison doesn't work ###
-  probe   = [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], { q: 'Q', s: 'S', }, ]
+  probes = [
+    [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], { q: 'Q', s: 'S', }, ]
+    ]
   # probe   = [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], ( new Set Array.from 'abc' ), ]
   # matcher = [ 'foo', 42, [ 'bar', ( -> 'xxx' ), ], ( new Set Array.from 'abc' ), ]
-  result  = CND.deep_copy probe
-  T.eq result, probe
-  T.ok result isnt probe
+  for probe in probes
+    result  = CND.deep_copy probe
+    T.eq result, probe
+    T.ok result isnt probe
+  #.........................................................................................................
   return null
 
 
@@ -163,9 +185,14 @@ test                      = require 'guy-test'
 ############################################################################################################
 unless module.parent?
   include = [
-    # 'test type_of'
-    'XJSON'
+    "test type_of"
+    "test size_of"
+    "XJSON (1)"
+    "XJSON (2)"
+    "is_subset"
+    "deep_copy"
     ]
-  # @_prune()
+  @_prune()
   @_main()
 
+  # debug Object.keys @

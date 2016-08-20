@@ -3,6 +3,7 @@
 ############################################################################################################
 CND                       = require './main'
 rpr                       = CND.rpr
+log                       = console.log
 # badge                     = 'scratch'
 # log                       = CND.get_logger 'plain',     badge
 # info                      = CND.get_logger 'info',      badge
@@ -23,17 +24,21 @@ rpr                       = CND.rpr
 
 #-----------------------------------------------------------------------------------------------------------
 @replacer = ( key, value ) ->
-  # return JSON.stringify value unless ( CND.type_of d ) is 'set'
-  return value unless ( CND.type_of value ) is 'set'
-  R =
-    '~isa':   'set'
-    '%self':  ( Array.from value )
+  switch type = CND.type_of value
+    when 'set'          then  R = { '~isa': '-x-set',       '%self': ( Array.from value ), }
+    when 'map'          then  R = { '~isa': '-x-map',       '%self': ( Array.from value ), }
+    when 'function'     then  R = { '~isa': '-x-function',  '%self': ( value.toString() ), }
+    else                      R = value
   return R
 
 #-----------------------------------------------------------------------------------------------------------
 @reviver = ( key, value ) ->
-  return value unless ( CND.isa_pod value ) and ( value[ '~isa' ] is 'set' )
-  return new Set value[ '%self' ]
+  switch type = CND.type_of value
+    when '-x-set'       then  R = new Set value[ '%self' ]
+    when '-x-map'       then  R = new Map value[ '%self' ]
+    when '-x-function'  then  R = ( eval "[ " + value[ '%self' ] + " ]" )[ 0 ]
+    else                      R = value
+  return R
 
 #-----------------------------------------------------------------------------------------------------------
 @stringify = ( value, replacer, spaces ) ->
