@@ -16,6 +16,8 @@ for route in routes
     method_count += +1
     value         = value.bind module if ( Object::toString.call value ) is '[object Function]'
     @[ name ]     = value
+#...........................................................................................................
+@XJSON = require './XJSON'
 
 
 # ############################################################################################################

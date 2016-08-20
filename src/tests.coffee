@@ -102,7 +102,7 @@ test                      = require 'guy-test'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "XJSON (1)" ] = ( T ) ->
-  CND.XJSON = require './XJSON'
+  # CND.XJSON = require './XJSON'
   e         = new Set 'xy'
   e.add new Set 'abc'
   d         = [ 'A', 'B', e, ]
@@ -113,7 +113,7 @@ test                      = require 'guy-test'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "XJSON (2)" ] = ( T ) ->
-  CND.XJSON = require './XJSON'
+  # CND.XJSON = require './XJSON'
   s   = new Set Array.from 'Popular Mechanics'
   m   = new Map [ [ 'a', 1, ], [ 'b', 2, ], ]
   f   = ( x ) -> x ** 2
