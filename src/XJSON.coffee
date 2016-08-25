@@ -24,21 +24,40 @@ log                       = console.log
 
 #-----------------------------------------------------------------------------------------------------------
 @replacer = ( key, value ) ->
+  ### NOTE Buffers are treated specially; at this point, they are already converted into sth that looks
+  like `{ type: 'Buffer', data: [ ... ], }`. ###
+  if ( CND.isa_pod value ) and ( value[ 'type' ] is 'Buffer' ) and ( CND.isa_list data = value[ 'data' ] )
+    return { '~isa': '-x-buffer',    '%self': data, }
+  #.........................................................................................................
   switch type = CND.type_of value
-    when 'set'          then  R = { '~isa': '-x-set',       '%self': ( Array.from value ), }
-    when 'map'          then  R = { '~isa': '-x-map',       '%self': ( Array.from value ), }
-    when 'function'     then  R = { '~isa': '-x-function',  '%self': ( value.toString() ), }
-    else                      R = value
-  return R
+    #.......................................................................................................
+    when 'nan'          then  return { '~isa': '-x-nan',        }
+    #.......................................................................................................
+    when 'set'          then  return { '~isa': '-x-set',       '%self': ( Array.from value ), }
+    when 'map'          then  return { '~isa': '-x-map',       '%self': ( Array.from value ), }
+    when 'function'     then  return { '~isa': '-x-function',  '%self': ( value.toString() ), }
+    #.......................................................................................................
+    when 'symbol'
+      data    = value.toString().replace /^Symbol\((.*)\)$/, '$1'
+      local   = value is Symbol.for data
+      return { '~isa': '-x-symbol', local, '%self': data, }
+  #.........................................................................................................
+  return value
 
 #-----------------------------------------------------------------------------------------------------------
 @reviver = ( key, value ) ->
+  #.........................................................................................................
   switch type = CND.type_of value
-    when '-x-set'       then  R = new Set value[ '%self' ]
-    when '-x-map'       then  R = new Map value[ '%self' ]
-    when '-x-function'  then  R = ( eval "[ " + value[ '%self' ] + " ]" )[ 0 ]
-    else                      R = value
-  return R
+    #.......................................................................................................
+    when '-x-nan'       then  return NaN
+    #.......................................................................................................
+    when '-x-buffer'    then  return Buffer.from value[ '%self' ]
+    when '-x-set'       then  return new Set value[ '%self' ]
+    when '-x-map'       then  return new Map value[ '%self' ]
+    when '-x-function'  then  return ( eval "[ " + value[ '%self' ] + " ]" )[ 0 ]
+    when '-x-symbol'    then  return Symbol.for value[ '%self' ]
+  #.........................................................................................................
+  return value
 
 #-----------------------------------------------------------------------------------------------------------
 @stringify = ( value, replacer, spaces ) ->
@@ -51,29 +70,8 @@ log                       = console.log
   return JSON.parse text, reviver
 
 #-----------------------------------------------------------------------------------------------------------
-@_demo = ->
-  XJSON = @
-  e = new Set 'xy'
-  e.add new Set 'abc'
-  d = [ 'A', 'B', e, ]
-  help d
-  # debug HOLLERITH.CODEC.encode d
-  # debug HOLLERITH.CODEC.decode HOLLERITH.CODEC.encode d
-  # help JSON.stringify d
-  # help JSON.stringify d, @replacer
-  # urge JSON.parse ( JSON.stringify d, @replacer ), @reviver
-  info XJSON.stringify d
-  info XJSON.parse XJSON.stringify d
-
-#-----------------------------------------------------------------------------------------------------------
 @replacer   = @replacer.bind  @
 @reviver    = @reviver.bind   @
 @stringify  = @stringify.bind @
 @parse      = @parse.bind     @
-@_demo      = @_demo.bind     @
-
-
-############################################################################################################
-unless module.parent?
-  @_demo()
 
