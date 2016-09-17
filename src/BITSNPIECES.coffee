@@ -520,3 +520,52 @@ validate_isa_number = ( x ) ->
       throw new Error "expected lists or sets, got #{type_of_sub} and #{type_of_super}"
   return null
 
+
+#===========================================================================================================
+# ERROR HANDLING
+#-----------------------------------------------------------------------------------------------------------
+@run = ( method, on_error = null, on_after_error = null ) ->
+  ### Provide asynchronous error handling and long stacktraces. Usage:
+
+  To run a method, catch all the synchronous and asynchronous errors and print a stacktrace
+  to `process.stderr` (using `console.error`):
+
+  ```coffee
+  CND.run -> f 42
+  ```
+
+  Same as the above, but do the error handling yourself:
+
+  ```coffee
+  CND.run ( -> f 42 ), ( error ) -> foobar()
+  ```
+
+  Same as the last, except have CND output the error's stacktrace and be called back afterwards:
+
+  ```coffee
+  CND.run ( -> f 42 ), null, ( error ) -> foobar()
+  ```
+
+  NB.: `CND.run` may be made configurable in the future; as of now, it is hardwired to use colors
+  and always provide long (cross-event) stack traces. Colors used are blue for NodeJS VM built-ins,
+  green for errors originating from modules installed under `node_modules`, and yellow for everything
+  else.
+
+  ###
+  on_error         ?= ( error ) ->
+    console.error error[ 'stack' ]
+    on_after_error error if on_after_error?
+  trycatch          = require 'trycatch'
+  #.........................................................................................................
+  trycatch_settings =
+    'long-stack-traces': yes
+    'colors':
+      # 'none' or falsy values will omit
+      'node':         'blue',
+      'node_modules': 'green',
+      'default':      'yellow'
+  #.........................................................................................................
+  trycatch.configure trycatch_settings
+  trycatch method, on_error
+  #.........................................................................................................
+  return null
