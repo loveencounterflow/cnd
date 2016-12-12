@@ -436,3 +436,17 @@ a nice test to see the effect*
 北京 (Peking) 位於華北 (North*
 北京 (Peking) 位於華北 (North*
 ```
+
+## ToDo
+
+* [ ] Add a utility method to enable catch-all listeners on event emitters (as used in kleinbild):
+```coffee
+  _emit = R.emit.bind R
+  R.emit = ( event_name, P... ) =>
+    _emit '*',  event_name, P...
+    _emit       event_name, P...
+    return null
+  R.on '*', ( event_name, P... ) =>
+    @U.dump event_name, P...
+    return null
+```
