@@ -206,6 +206,15 @@ test                      = require 'guy-test'
   #.........................................................................................................
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "logging with timestamps" ] = ( T, done ) ->
+  my_badge                  = 'BITSNPIECES/test'
+  my_info                   = TRM.get_logger 'info',      badge
+  my_help                   = TRM.get_logger 'help',      badge
+  my_info 'helo'
+  my_help 'world'
+  done()
+
 
 #===========================================================================================================
 # MAIN
@@ -230,6 +239,7 @@ unless module.parent?
     "XJSON (1)"
     "XJSON (2)"
     "XJSON (3)"
+    "logging with timestamps"
     ]
   @_prune()
   @_main()

@@ -11,6 +11,7 @@ TYPES                     = require './TYPES'
 isa_text                  = TYPES.isa_text.bind TYPES
 _rpr                      = ( require 'util' ).inspect
 @ANSI                     = require './TRM-VT100-ANALYZER'
+σ_cnd                     = Symbol.for 'cnd'
 
 
 # #-----------------------------------------------------------------------------------------------------------
@@ -266,6 +267,7 @@ rainbow_idx         = -1
       throw new Error "unknown logger category #{_rpr category}"
   #.........................................................................................................
   prefix = if badge? then ( @grey badge ).concat ' ', pointer else pointer
+  prefix = ( @grey get_timestamp() ) + ' ' + prefix
   #.........................................................................................................
   if colorize?
     R = ( P... ) => return @log prefix, colorize P...
@@ -273,6 +275,17 @@ rainbow_idx         = -1
     R = ( P... ) => return @log prefix, P...
   #.........................................................................................................
   return R
+
+#-----------------------------------------------------------------------------------------------------------
+get_timestamp = ->
+  t1  = Math.floor ( Date.now() - global[ σ_cnd ].t0 ) / 1000
+  s   = t1 % 60
+  s   = '' + s
+  s   = '0' + s if s.length < 2
+  m   = ( Math.floor t1 / 60 ) % 100
+  m   = '' + m
+  m   = '0' + m if m.length < 2
+  return "#{m}:#{s}"
 
 
 #===========================================================================================================
