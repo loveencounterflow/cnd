@@ -296,14 +296,14 @@ test                      = require 'guy-test'
 ############################################################################################################
 unless module.parent?
   include = [
-    # "test type_of"
-    # "test size_of"
-    # "is_subset"
-    # "deep_copy"
-    # "XJSON (1)"
-    # "XJSON (2)"
-    # "XJSON (3)"
-    # "logging with timestamps"
+    "test type_of"
+    "test size_of"
+    "is_subset"
+    "deep_copy"
+    "XJSON (1)"
+    "XJSON (2)"
+    "XJSON (3)"
+    "logging with timestamps"
     "suspend (basic)"
     "suspend (with ordinary function)"
     "suspend (with custom this)"

@@ -31,7 +31,7 @@ js_type_of                = ( x ) -> return Object::toString.call x
   '[object ArrayBuffer]':               'arraybuffer'
   #.........................................................................................................
   '[object Object]': ( x ) ->
-    return 'buffer' if isBuffer x
+    return 'buffer' if Buffer.isBuffer x
     return 'pod'
   #.........................................................................................................
   '[object Number]': ( x ) ->
@@ -86,7 +86,7 @@ js_type_of                = ( x ) -> return Object::toString.call x
 @isa_list          = ( x ) -> return ( js_type_of x ) == '[object Array]'
 @isa_boolean       = ( x ) -> return ( js_type_of x ) == '[object Boolean]'
 @isa_function      = ( x ) -> return ( js_type_of x ) == '[object Function]'
-@isa_pod           = ( x ) -> return ( js_type_of x ) == '[object Object]' and not isBuffer x
+@isa_pod           = ( x ) -> return ( js_type_of x ) == '[object Object]' and not Buffer.isBuffer x
 @isa_text          = ( x ) -> return ( js_type_of x ) == '[object String]'
 @isa_number        = ( x ) -> return ( js_type_of x ) == '[object Number]' and isFinite x
 @isa_null          = ( x ) -> return x is null
@@ -104,7 +104,7 @@ js_type_of                = ( x ) -> return Object::toString.call x
 @isa_jsctx         = ( x ) -> return ( js_type_of x ) == '[object CanvasRenderingContext2D]'
 @isa_jsarraybuffer = ( x ) -> return ( js_type_of x ) == '[object ArrayBuffer]'
 #...........................................................................................................
-# @isa_jsbuffer      = isBuffer
+# @isa_jsbuffer      = Buffer.isBuffer
 
 #-----------------------------------------------------------------------------------------------------------
 ### https://github.com/blakeembrey/is-generator/blob/master/is-generator.js ###
@@ -114,8 +114,8 @@ js_type_of                = ( x ) -> return Object::toString.call x
 #-----------------------------------------------------------------------------------------------------------
 # Replace some of our ``isa_*`` methods by the ≈6× faster methods provided by NodeJS ≥ 0.6.0, where
 # available:
-@isa_list       = Array.isArray     if Array.isArray?
-@isa_buffer     = Buffer.isBuffer   if Buffer.isBuffer?
+@isa_list       = Array.isArray
+@isa_buffer     = Buffer.isBuffer
 # @isa_jsregex          = njs_util.isRegExp           if njs_util.isRegExp?
 # @isa_jsdate           = njs_util.isDate             if njs_util.isDate?
 # @isa_boolean          = njs_util.isBoolean          if njs_util.isBoolean?
