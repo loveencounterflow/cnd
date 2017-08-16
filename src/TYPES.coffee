@@ -6,8 +6,6 @@ rpr                       = ( x ) -> return ( require 'util' ).inspect x, false,
 njs_util                  = require 'util'
 js_type_of                = ( x ) -> return Object::toString.call x
 #...........................................................................................................
-### There appear to have been some changes in NodeJS concerning where to find `isXY` methods: ###
-isBuffer                  = Buffer.isBuffer ? njs_util.isBuffer
 
 
 #===========================================================================================================
@@ -106,20 +104,26 @@ isBuffer                  = Buffer.isBuffer ? njs_util.isBuffer
 @isa_jsctx         = ( x ) -> return ( js_type_of x ) == '[object CanvasRenderingContext2D]'
 @isa_jsarraybuffer = ( x ) -> return ( js_type_of x ) == '[object ArrayBuffer]'
 #...........................................................................................................
-@isa_jsbuffer      = isBuffer
+# @isa_jsbuffer      = isBuffer
+
+#-----------------------------------------------------------------------------------------------------------
+### https://github.com/blakeembrey/is-generator/blob/master/is-generator.js ###
+@isa_generator           = ( x ) -> x? and ( typeof x.next is 'function' ) and ( typeof x.throw is 'function' )
+@isa_generator_function  = ( x ) -> ( typeof x is 'function' ) and ( x.constructor.name == 'GeneratorFunction' )
 
 #-----------------------------------------------------------------------------------------------------------
 # Replace some of our ``isa_*`` methods by the ≈6× faster methods provided by NodeJS ≥ 0.6.0, where
 # available:
-@isa_list             = njs_util.isArray            if njs_util.isArray?
-@isa_jsregex          = njs_util.isRegExp           if njs_util.isRegExp?
-@isa_jsdate           = njs_util.isDate             if njs_util.isDate?
-@isa_boolean          = njs_util.isBoolean          if njs_util.isBoolean?
-@isa_jserror          = njs_util.isError            if njs_util.isError?
-@isa_function         = njs_util.isFunction         if njs_util.isFunction?
-@isa_primitive        = njs_util.isPrimitive        if njs_util.isPrimitive?
-@isa_text             = njs_util.isString           if njs_util.isString?
-@isa_jsundefined      = njs_util.isUndefined        if njs_util.isUndefined?
+@isa_list       = Array.isArray     if Array.isArray?
+@isa_buffer     = Buffer.isBuffer   if Buffer.isBuffer?
+# @isa_jsregex          = njs_util.isRegExp           if njs_util.isRegExp?
+# @isa_jsdate           = njs_util.isDate             if njs_util.isDate?
+# @isa_boolean          = njs_util.isBoolean          if njs_util.isBoolean?
+# @isa_jserror          = njs_util.isError            if njs_util.isError?
+# @isa_function         = njs_util.isFunction         if njs_util.isFunction?
+# @isa_primitive        = njs_util.isPrimitive        if njs_util.isPrimitive?
+# @isa_text             = njs_util.isString           if njs_util.isString?
+# @isa_jsundefined      = njs_util.isUndefined        if njs_util.isUndefined?
 # @isa_null             = njs_util.isNull             if njs_util.isNull?
 # @isa_nullorundefined  = njs_util.isNullOrUndefined  if njs_util.isNullOrUndefined?
 # @isa_number           = njs_util.isNumber           if njs_util.isNumber?

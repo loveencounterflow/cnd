@@ -8,7 +8,7 @@ njs_path                  = require 'path'
 #...........................................................................................................
 TRM                       = require './TRM'
 rpr                       = TRM.rpr.bind TRM
-badge                     = 'BITSNPIECES/test'
+badge                     = 'CND/test'
 log                       = TRM.get_logger 'plain',     badge
 info                      = TRM.get_logger 'info',      badge
 whisper                   = TRM.get_logger 'whisper',   badge
@@ -217,6 +217,70 @@ test                      = require 'guy-test'
 
 
 #===========================================================================================================
+# SUSPEND
+#-----------------------------------------------------------------------------------------------------------
+@[ "suspend (basic)" ] = ( T, done ) ->
+  { step, } = CND.suspend
+  count     = 0
+  wait      = ( handler ) -> setTimeout ( -> handler null, 'yes' ), 250
+  step ( resume ) ->
+    # debug JSON.stringify( name for name of @ ), @ is global, setTimeout
+    loop
+      count += +1
+      break if count >= 5
+      yield wait resume
+      urge count
+    T.eq count, 5
+    help 'ok'
+    done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "suspend (with ordinary function)" ] = ( T, done ) ->
+  { step, } = CND.suspend
+  T.throws 'expected a generator function, got a function', ( -> step ( resume ) -> xxx )
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "suspend (with custom this)" ] = ( T, done ) ->
+  { step
+    after } = CND.suspend
+  count     = 0
+  my_ctx    =
+    foo:  42
+    wait: ( dts, handler ) -> whisper 'before'; after dts, -> handler null, 'yes'
+  step my_ctx, ( resume ) ->
+    # debug JSON.stringify( name for name of @ ), @ is global, setTimeout
+    loop
+      count += +1
+      whisper yield @wait 0.250, resume
+      break if count >= 5
+      urge count
+    T.eq count, 5
+    help 'ok'
+    done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "isa-generator" ] = ( T, done ) ->
+  probes_and_matchers = [
+    [ ( -> ),                       no,   no,   'function',           ]
+    [ ( -> yield 42 ),              no,   yes,  'generatorfunction',  ]
+    [ ( -> yield 42 )(),            yes,  no,   'generator',          ]
+    ]
+  jr = JSON.stringify
+  for [ probe, is_gen, is_genf, type, ] in probes_and_matchers
+    result_is_gen  = CND.isa_generator           probe
+    result_is_genf = CND.isa_generator_function  probe
+    # debug jr [ probe, result_is_gen, result_is_genf, ]
+    # debug ( CND.isa_function probe ), probe.constructor.name
+    T.eq result_is_gen,  is_gen
+    T.eq result_is_genf, is_genf
+    T.eq ( CND.type_of probe ), type
+  done()
+
+#===========================================================================================================
 # MAIN
 #-----------------------------------------------------------------------------------------------------------
 @_main = ( handler ) ->
@@ -232,30 +296,18 @@ test                      = require 'guy-test'
 ############################################################################################################
 unless module.parent?
   include = [
-    "test type_of"
-    "test size_of"
-    "is_subset"
-    "deep_copy"
-    "XJSON (1)"
-    "XJSON (2)"
-    "XJSON (3)"
-    "logging with timestamps"
+    # "test type_of"
+    # "test size_of"
+    # "is_subset"
+    # "deep_copy"
+    # "XJSON (1)"
+    # "XJSON (2)"
+    # "XJSON (3)"
+    # "logging with timestamps"
+    "suspend (basic)"
+    "suspend (with ordinary function)"
+    "suspend (with custom this)"
+    "isa-generator"
     ]
   @_prune()
   @_main()
-
-  # debug Object.keys @
-
-
-
-
-
-
-
-
-
-
-
-
-
-
