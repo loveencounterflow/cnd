@@ -12,6 +12,23 @@ CND                       = require './main'
 @equals = ( P... ) -> ( require './jkroso-equals' ) P...
 
 #-----------------------------------------------------------------------------------------------------------
+@is_empty = ( x ) ->
+  return ( x.length is 0 ) if x.length?
+  return ( x.size   is 0 ) if x.size?
+  throw new Error "unable to determine length of a #{CND.type_of x}"
+
+#-----------------------------------------------------------------------------------------------------------
+@jr     = JSON.stringify
+@assign = Object.assign
+
+#-----------------------------------------------------------------------------------------------------------
+@copy = ( P... ) ->
+  return switch type = @type_of P[ 0 ]
+    when 'pod'  then @assign {}, P...
+    when 'list' then @assign [], P...
+    else throw new Error "µ09231 unable to copy a #{type}"
+
+#-----------------------------------------------------------------------------------------------------------
 @deep_copy = ( P... ) -> ( require './universal-copy' ) P...
 
 #-----------------------------------------------------------------------------------------------------------
