@@ -7,6 +7,7 @@ njs_fs                    = require 'fs'
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 CND                       = require './main'
+@flatten                  = require 'lodash.flattendeep'
 
 #-----------------------------------------------------------------------------------------------------------
 @equals = ( P... ) -> ( require './jkroso-equals' ) P...
