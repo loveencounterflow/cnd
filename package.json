@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/loveencounterflow/cnd",
   "dependencies": {
-    "lodash.flattendeep": "^4.4.0",
     "mkdirp": "^0.5.1",
     "trycatch": "^1.5.21"
   },
