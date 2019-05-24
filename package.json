@@ -27,9 +27,10 @@
   "homepage": "https://github.com/loveencounterflow/cnd",
   "dependencies": {
     "lodash.flattendeep": "^4.4.0",
+    "mkdirp": "^0.5.1",
     "trycatch": "^1.5.21"
   },
   "devDependencies": {
-    "guy-test": "^1.3.1"
+    "guy-test": "^1.4.0"
   }
 }
