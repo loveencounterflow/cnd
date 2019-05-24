@@ -71,7 +71,7 @@ test                      = require 'guy-test'
   T.eq ( CND.type_of 1 / 0                    ), 'infinity'
   T.eq ( CND.type_of -1 / 0                   ), 'infinity'
   T.eq ( CND.type_of 12345                    ), 'number'
-  T.eq ( CND.type_of new Buffer 'helo'        ), 'buffer'
+  T.eq ( CND.type_of Buffer.from 'helo'       ), 'buffer'
   T.eq ( CND.type_of new ArrayBuffer 42       ), 'arraybuffer'
   #.........................................................................................................
   T.eq ( CND.type_of new Int8Array         5  ), 'int8array'
@@ -88,16 +88,16 @@ test                      = require 'guy-test'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "test size_of" ] = ( T ) ->
-  # debug ( new Buffer '𣁬', ), ( '𣁬'.codePointAt 0 ).toString 16
-  # debug ( new Buffer '𡉜', ), ( '𡉜'.codePointAt 0 ).toString 16
-  # debug ( new Buffer '𠑹', ), ( '𠑹'.codePointAt 0 ).toString 16
-  # debug ( new Buffer '𠅁', ), ( '𠅁'.codePointAt 0 ).toString 16
+  # debug ( Buffer.from '𣁬', ), ( '𣁬'.codePointAt 0 ).toString 16
+  # debug ( Buffer.from '𡉜', ), ( '𡉜'.codePointAt 0 ).toString 16
+  # debug ( Buffer.from '𠑹', ), ( '𠑹'.codePointAt 0 ).toString 16
+  # debug ( Buffer.from '𠅁', ), ( '𠅁'.codePointAt 0 ).toString 16
   T.eq ( CND.size_of [ 1, 2, 3, 4, ]                                    ), 4
-  T.eq ( CND.size_of new Buffer [ 1, 2, 3, 4, ]                         ), 4
+  T.eq ( CND.size_of Buffer.from [ 1, 2, 3, 4, ]                         ), 4
   T.eq ( CND.size_of '𣁬𡉜𠑹𠅁'                                             ), 2 * ( Array.from '𣁬𡉜𠑹𠅁' ).length
   T.eq ( CND.size_of '𣁬𡉜𠑹𠅁', count: 'codepoints'                        ), ( Array.from '𣁬𡉜𠑹𠅁' ).length
   T.eq ( CND.size_of '𣁬𡉜𠑹𠅁', count: 'codeunits'                         ), 2 * ( Array.from '𣁬𡉜𠑹𠅁' ).length
-  T.eq ( CND.size_of '𣁬𡉜𠑹𠅁', count: 'bytes'                             ), ( new Buffer '𣁬𡉜𠑹𠅁', 'utf-8' ).length
+  T.eq ( CND.size_of '𣁬𡉜𠑹𠅁', count: 'bytes'                             ), ( Buffer.from '𣁬𡉜𠑹𠅁', 'utf-8' ).length
   T.eq ( CND.size_of 'abcdefghijklmnopqrstuvwxyz'                       ), 26
   T.eq ( CND.size_of 'abcdefghijklmnopqrstuvwxyz', count: 'codepoints'  ), 26
   T.eq ( CND.size_of 'abcdefghijklmnopqrstuvwxyz', count: 'codeunits'   ), 26
@@ -280,34 +280,39 @@ test                      = require 'guy-test'
     T.eq ( CND.type_of probe ), type
   done()
 
-#===========================================================================================================
-# MAIN
 #-----------------------------------------------------------------------------------------------------------
-@_main = ( handler ) ->
-  test @, 'timeout': 2500
+@[ "path methods" ] = ( T, done ) ->
+  T.eq ( CND.here_abspath  '/foo/bar', '/baz/coo'       ), '/baz/coo'
+  T.eq ( CND.cwd_abspath   '/foo/bar', '/baz/coo'       ), '/baz/coo'
+  T.eq ( CND.here_abspath  '/baz/coo'                   ), '/baz/coo'
+  T.eq ( CND.cwd_abspath   '/baz/coo'                   ), '/baz/coo'
+  T.eq ( CND.here_abspath  '/foo/bar', 'baz/coo'        ), '/foo/bar/baz/coo'
+  T.eq ( CND.cwd_abspath   '/foo/bar', 'baz/coo'        ), '/foo/bar/baz/coo'
+  # T.eq ( CND.here_abspath  'baz/coo'                    ), '/....../cnd/baz/coo'
+  # T.eq ( CND.cwd_abspath   'baz/coo'                    ), '/....../cnd/baz/coo'
+  # T.eq ( CND.here_abspath  __dirname, 'baz/coo', 'x.js' ), '/....../cnd/lib/baz/coo/x.js'
+  done()
 
 #-----------------------------------------------------------------------------------------------------------
-@_prune = ->
-  for name, value of @
-    continue if name.startsWith '_'
-    delete @[ name ] unless name in include
-  return null
+@[ "format_number" ] = ( T, done ) ->
+  T.eq ( CND.format_number 42         ), '42'
+  T.eq ( CND.format_number 42000      ), '42,000'
+  T.eq ( CND.format_number 42000.1234 ), '42,000.123'
+  T.eq ( CND.format_number 42.1234e6  ), '42,123,400'
+  done()
+
+
+
+
+
 
 ############################################################################################################
 unless module.parent?
-  include = [
-    "test type_of"
-    "test size_of"
-    "is_subset"
-    "deep_copy"
-    "XJSON (1)"
-    "XJSON (2)"
-    "XJSON (3)"
-    "logging with timestamps"
-    "suspend (basic)"
-    "suspend (with ordinary function)"
-    "suspend (with custom this)"
-    "isa-generator"
-    ]
-  @_prune()
-  @_main()
+  test @, 'timeout': 2500
+  # test @[ "path methods" ]
+  # test @[ "format_number" ]
+
+
+
+
+
