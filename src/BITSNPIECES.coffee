@@ -7,7 +7,8 @@ njs_fs                    = require 'fs'
 njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 CND                       = require './main'
-@flatten                  = require 'lodash.flattendeep'
+PATH                      = require 'path'
+@flatten                  = ( x, depth = Infinity ) -> x.flat depth
 
 #-----------------------------------------------------------------------------------------------------------
 @equals = ( P... ) -> ( require './jkroso-equals' ) P...
@@ -23,6 +24,17 @@ CND                       = require './main'
 @assign = Object.assign
 
 #-----------------------------------------------------------------------------------------------------------
+@here_abspath             = ( dirname, P... ) -> PATH.resolve   dirname,        P...
+@cwd_abspath              = ( P...          ) -> PATH.resolve   process.cwd(),  P...
+@cwd_relpath              = ( P...          ) -> PATH.relative  process.cwd(),  P...
+
+#-----------------------------------------------------------------------------------------------------------
+@ensure_directory = ( path ) -> new Promise ( resolve, reject ) =>
+  ( require 'mkdirp' ) path, ( error ) =>
+    throw error if error?
+    resolve()
+
+#-----------------------------------------------------------------------------------------------------------
 @copy = ( P... ) ->
   return switch type = @type_of P[ 0 ]
     when 'pod'  then @assign {}, P...
@@ -33,12 +45,8 @@ CND                       = require './main'
 @deep_copy = ( P... ) -> ( require './universal-copy' ) P...
 
 #-----------------------------------------------------------------------------------------------------------
-@format_number = ( n, grouper = "'" ) ->
-  ### A simple number formatter. ###
-  n       = n.toString()
-  f       = ( n ) -> return h n, /(\d+)(\d{3})/
-  h       = ( n, re ) -> n = n.replace re, "$1" + grouper + "$2" while re.test n; return n
-  return f n
+number_formatter = new Intl.NumberFormat 'en-US'
+@format_number = ( x ) -> number_formatter.format x
 
 #-----------------------------------------------------------------------------------------------------------
 @escape_regex = ( text ) ->
