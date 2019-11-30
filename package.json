@@ -27,9 +27,10 @@
   "homepage": "https://github.com/loveencounterflow/cnd",
   "dependencies": {
     "mkdirp": "^0.5.1",
+    "stackman": "^4.0.0",
     "trycatch": "^1.5.21"
   },
   "devDependencies": {
-    "guy-test": "^1.4.0"
+    "guy-test": "^1.4.1"
   }
 }
