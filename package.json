@@ -4,7 +4,7 @@
   "description": "a grab-bag NodeJS package mainly for functionalities that used to live in coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types",
   "main": "lib/main.js",
   "bin": {
-    "nodexh": "lib/nodexh.js"
+    "nodexh": "bin/nodexh"
   },
   "scripts": {
     "build": "coffee --map -o lib -c src",
