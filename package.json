@@ -3,6 +3,7 @@
   "version": "4.7.3",
   "description": "a grab-bag NodeJS package mainly for functionalities that used to live in coffeenode-trm, coffeenode-bitsnpieces, and coffeenode-types",
   "main": "lib/main.js",
+  "bin" : { "nodexh" : "lib/nodexh.js" },
   "scripts": {
     "build": "coffee --map -o lib -c src",
     "push": "git add . && git commit -m'update' && git push",
