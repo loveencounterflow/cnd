@@ -24,9 +24,7 @@ for route in routes
     # value         = value.bind module if ( Object::toString.call value ) is '[object Function]'
     value         = value.bind L if ( Object::toString.call value ) is '[object Function]'
     @[ name ]     = value
-#...........................................................................................................
-@XJSON    = require './XJSON'
-@suspend  = require './suspend'
+
 
 # ############################################################################################################
 # unless module.parent?
