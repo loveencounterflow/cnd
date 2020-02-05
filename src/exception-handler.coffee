@@ -7,7 +7,7 @@
 ############################################################################################################
 CND                       = require 'cnd'
 rpr                       = CND.rpr
-badge                     = 'cndxh'
+badge                     = 'nodexh'
 log                       = CND.get_logger 'plain',     badge
 debug                     = CND.get_logger 'debug',     badge
 info                      = CND.get_logger 'info',      badge
@@ -18,7 +18,6 @@ urge                      = CND.get_logger 'urge',      badge
 whisper                   = CND.get_logger 'whisper',   badge
 echo                      = CND.echo.bind CND
 stackman                  = ( require 'stackman' )()
-# require                   'longjohn'
 FS                        = require 'fs'
 PATH                      = require 'path'
 { isa_text
