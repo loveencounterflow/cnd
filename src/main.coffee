@@ -8,28 +8,15 @@ rpr                       = njs_util.inspect
 σ_cnd                     = Symbol.for 'cnd'
 global[ σ_cnd ]          ?= {}
 global[ σ_cnd ].t0       ?= Date.now()
-
+is_function								= ( x ) -> ( Object::toString.call x ) is '[object Function]'
 
 #===========================================================================================================
 # ACQUISITION
 #-----------------------------------------------------------------------------------------------------------
-method_count  = 0
-routes        = [ './TRM', './BITSNPIECES', './TYPES', ]
-L             = @
-#...........................................................................................................
-for route in routes
-  for name, value of module = require route
-    throw new Error "duplicate name #{rpr name}" if @[ name ]?
-    method_count += +1
-    # value         = value.bind module if ( Object::toString.call value ) is '[object Function]'
-    value         = value.bind L if ( Object::toString.call value ) is '[object Function]'
-    @[ name ]     = value
+( @[ k ] = if is_function v then v.bind @ else v ) for k, v of require './TRM'
+( @[ k ] = if is_function v then v.bind @ else v ) for k, v of require './BITSNPIECES'
+( @[ k ] = if is_function v then v.bind @ else v ) for k, v of require './TYPES'
 
-
-# ############################################################################################################
-# unless module.parent?
-#   console.log "acquired #{method_count} names from #{routes.length} sub-modules"
-#   @dir @
 
 
 
