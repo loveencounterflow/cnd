@@ -454,32 +454,3 @@ a nice test to see the effect*
 ```
 
 
-* [ ] `exception-handler`, `nodexh`: Repair broken source map treatment
-* [ ] `exception-handler`, `nodexh`: Quote function name where supplied as in original stack traces
-* [ ] `exception-handler`, `nodexh`: Always add function name where available
-* [ ] `exception-handler`, `nodexh`: Fix broken error messages with `Invalid or unexpected token`:
-  ```
-  00:00 nodexh  ⚠    EXCEPTION: Invalid or unexpected token
-  00:00 nodexh  ⚠  internal/modules/cjs/loader.js #1063
-  00:00 nodexh  ⚠  internal/modules/cjs/loader.js #1111
-  00:00 nodexh  ⚠  internal/modules/cjs/loader.js #1167
-  00:00 nodexh  ⚠  internal/modules/cjs/loader.js #996
-  00:00 nodexh  ⚠  internal/modules/cjs/loader.js #896
-  00:00 nodexh  ⚠  internal/modules/run_main.js #71
-  00:00 nodexh  ⚠  internal/main/run_main_module.js #17
-  ```
-  vs.
-  ```
-  /media/flow/kamakura/home/flow/jzr/intertype/lib/tests/jsidentifiers.test.js:3
-    var probes_and_matchers, ᵉˣᵃᵐᵖˡᵉ, ₑₓₐₘₚₗₑ, №, ℞, ℠, ℡, ™, ℰ𝒳𝒜ℳ𝓟ℒℰ, ⓔⓧⓐⓜⓟⓛⓔ, 𝐞𝐱𝐚𝐦𝐩𝐥𝐞, 𝒆𝒙𝒂𝒎𝒑𝒍𝒆, 𝓮𝔁𝓪𝓶𝓹𝓵𝓮, 𝕖𝕩𝕒𝕞𝕡𝕝𝕖, 𝖊𝖝𝖆𝖒𝖕𝖑𝖊, 𝗲𝘅𝗮𝗺𝗽𝗹𝗲, 𝘦𝘹𝘢𝘮𝘱𝘭𝘦, 𝙚𝙭𝙖𝙢𝙥𝙡𝙚, 𝚎𝚡𝚊𝚖𝚙𝚕𝚎, 🄴🅇🄰🄼🄿🄻🄴;
-
-
-  SyntaxError: Invalid or unexpected token
-      at wrapSafe (internal/modules/cjs/loader.js:1063:16)
-      at Module._compile (internal/modules/cjs/loader.js:1111:27)
-      at Object.Module._extensions..js (internal/modules/cjs/loader.js:1167:10)
-      at Module.load (internal/modules/cjs/loader.js:996:32)
-      at Function.Module._load (internal/modules/cjs/loader.js:896:14)
-      at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
-      at internal/main/run_main_module.js:17:47
-  ```
