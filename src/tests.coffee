@@ -197,6 +197,19 @@ test                      = require 'guy-test'
   T.eq ( CND.format_number 42.1234e6  ), '42,123,400'
   done()
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "rpr" ] = ( T, done ) ->
+  echo rpr 42
+  echo rpr 42_000_000_000
+  echo rpr { foo: 'bar', bar: [ true, null, undefined, ], }
+  info rpr 42
+  info rpr 42_000_000_000
+  info rpr { foo: 'bar', bar: [ true, null, undefined, ], }
+  T.eq ( rpr 42                                               ), """42"""
+  T.eq ( rpr 42_000_000_000                                   ), """42000000000""" ### TAINT should have underscores ###
+  T.eq ( rpr { foo: 'bar', bar: [ true, null, undefined, ], } ), """{ foo: 'bar', bar: [ true, null, undefined ] }"""
+  done()
+
 
 
 

@@ -9,25 +9,19 @@
 badge                     = 'TRM'
 TYPES                     = require './TYPES'
 isa_text                  = TYPES.isa_text.bind TYPES
-_rpr                      = ( require 'util' ).inspect
 @ANSI                     = require './TRM-VT100-ANALYZER'
 σ_cnd                     = Symbol.for 'cnd'
+{ inspect }               = require 'util'
 
-
-# #-----------------------------------------------------------------------------------------------------------
-# @rpr = ( x ) ->
-#   try
-#     if x.toString? and ( x.toString isnt Object::toString )
-#       return x.toString()
-#     else
-#       return @_rpr x
-#   catch error
-#     throw error unless /^Cannot read property/.test error[ 'message' ]
-#     return @_rpr x
 
 #-----------------------------------------------------------------------------------------------------------
-@rpr = ( x ) ->
-  return _rpr x, depth: @depth_of_inspect
+rpr_settings =
+  depth:            Infinity
+  maxArrayLength:   Infinity
+  breakLength:      Infinity
+  compact:          true
+  colors:           false
+@rpr = rpr = ( P... ) -> ( ( inspect x, rpr_settings ) for x in P ).join ' '
 
 #-----------------------------------------------------------------------------------------------------------
 @get_output_method = ( target, options ) ->
@@ -264,7 +258,7 @@ rainbow_idx         = -1
       pointer   = @gold ' ☛ '
     #.......................................................................................................
     else
-      throw new Error "unknown logger category #{_rpr category}"
+      throw new Error "unknown logger category #{rpr category}"
   #.........................................................................................................
   prefix = if badge? then ( @grey badge ).concat ' ', pointer else pointer
   #.........................................................................................................
