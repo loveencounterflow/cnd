@@ -220,14 +220,9 @@ test                      = require 'guy-test'
 unless module.parent?
   test @, 'timeout': 2500
   # test @[ "path methods" ]
-  # test @[ "format_number" ]
+  # test @[ "rpr" ]
 
-  # require './exception-handler'
-  # require './exception-handler'
-  # require './exception-handler'
-  # require './exception-handler'
-  # require './exception-handler'
-  # xxx
+
 
 
 
