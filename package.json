@@ -8,9 +8,7 @@
   },
   "scripts": {
     "build": "coffee --map -o lib -c src",
-    "push": "git add . && git commit -m'update' && git push",
-    "pub": "npm run build && npm run push && npm version patch && npm publish",
-    "test": "node lib/tests.js"
+    "test": "echo see https://github.com/loveencounterflow/hengist"
   },
   "repository": {
     "type": "git",
@@ -27,9 +25,5 @@
   "bugs": {
     "url": "https://github.com/loveencounterflow/cnd/issues"
   },
-  "homepage": "https://github.com/loveencounterflow/cnd",
-  "devDependencies": {
-    "guy-test": "^2.0.2"
-  },
-  "dependencies": {}
+  "homepage": "https://github.com/loveencounterflow/cnd"
 }
