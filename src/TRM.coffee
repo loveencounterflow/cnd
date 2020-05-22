@@ -7,11 +7,12 @@
 @separator                = ' '
 @depth_of_inspect         = 20
 badge                     = 'TRM'
-TYPES                     = require './TYPES'
-isa_text                  = TYPES.isa_text.bind TYPES
 @ANSI                     = require './TRM-VT100-ANALYZER'
 σ_cnd                     = Symbol.for 'cnd'
 { inspect }               = require 'util'
+@types                    = require './types'
+{ isa
+  type_of }               = @types
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -36,7 +37,7 @@ rpr_settings =
 #-----------------------------------------------------------------------------------------------------------
 @_pen = ( P... ) ->
   ### ... ###
-  R = ( ( if isa_text p then p else @rpr p ) for p in P )
+  R = ( ( if isa.text p then p else @rpr p ) for p in P )
   return R.join @separator
 
 #-----------------------------------------------------------------------------------------------------------
@@ -159,7 +160,7 @@ for effect_name of effect_names
       R         = [ effect_on, ]
       last_idx  = P.length - 1
       for p, idx in P
-        R.push if isa_text p then p else @rpr p
+        R.push if isa.text p then p else @rpr p
         if idx isnt last_idx
           R.push effect_on
           R.push @separator
@@ -172,7 +173,7 @@ for color_name, color_code of @constants[ 'colors' ]
       R         = [ color_code, ]
       last_idx  = P.length - 1
       for p, idx in P
-        R.push if isa_text p then p else @rpr p
+        R.push if isa.text p then p else @rpr p
         if idx isnt last_idx
           R.push color_code
           R.push @separator
@@ -331,7 +332,7 @@ get_timestamp = ->
     R.push @grey '('.concat role, ')'
     R.push @orange type
     for name in names
-      marker = @_marker_from_type TYPES.type_of ( Object.getOwnPropertyDescriptor p, name )[ 'value' ]
+      marker = @_marker_from_type type_of ( Object.getOwnPropertyDescriptor p, name )[ 'value' ]
       R.push ( @cyan name ).concat @grey marker
   return R
 
@@ -348,7 +349,7 @@ get_timestamp = ->
 @_get_prototypes_types_and_property_names = ( x, types_and_names ) ->
   role = if types_and_names.length is 0 then 'type' else 'prototype'
   unless x?
-    types_and_names.push [ role, x, ( TYPES.type_of x ), [], ]
+    types_and_names.push [ role, x, ( type_of x ), [], ]
     return types_and_names
   #.........................................................................................................
   try
@@ -368,7 +369,7 @@ get_timestamp = ->
     throw error unless error[ 'message' ].test /^Cannot read property 'length' of /
   #.........................................................................................................
   names.sort()
-  types_and_names.push [ role, x, ( TYPES.type_of x ), names ]
+  types_and_names.push [ role, x, ( type_of x ), names ]
   #.........................................................................................................
   if prototype? and not ( @_dir_options[ 'skip-object' ] and prototype is @_prototype_of_object )
     @_get_prototypes_types_and_property_names prototype, types_and_names

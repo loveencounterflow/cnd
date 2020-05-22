@@ -9,13 +9,13 @@ rpr                       = njs_util.inspect
 global[ σ_cnd ]          ?= {}
 global[ σ_cnd ].t0       ?= Date.now()
 is_function								= ( x ) -> ( Object::toString.call x ) is '[object Function]'
+@types 										= require './types'
 
 #===========================================================================================================
 # ACQUISITION
 #-----------------------------------------------------------------------------------------------------------
-( @[ k ] = if is_function v then v.bind @ else v ) for k, v of require './TRM'
-( @[ k ] = if is_function v then v.bind @ else v ) for k, v of require './BITSNPIECES'
-( @[ k ] = if is_function v then v.bind @ else v ) for k, v of require './TYPES'
+( @[ k ] 	= if is_function v then v.bind @ else v ) for k, v of require './TRM'
+( @[ k ] 	= if is_function v then v.bind @ else v ) for k, v of require './BITSNPIECES'
 
 
 

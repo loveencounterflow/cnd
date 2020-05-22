@@ -9,15 +9,10 @@ rpr                       = njs_util.inspect
 CND                       = require './main'
 PATH                      = require 'path'
 @flatten                  = ( x, depth = Infinity ) -> x.flat depth
-
-#-----------------------------------------------------------------------------------------------------------
-@equals = ( P... ) -> ( require './jkroso-equals' ) P...
-
-#-----------------------------------------------------------------------------------------------------------
-@is_empty = ( x ) ->
-  return ( x.length is 0 ) if x.length?
-  return ( x.size   is 0 ) if x.size?
-  throw new Error "unable to determine length of a #{CND.type_of x}"
+@types                    = require './types'
+{ isa
+  validate
+  type_of }               = @types
 
 #-----------------------------------------------------------------------------------------------------------
 @jr     = JSON.stringify
@@ -27,13 +22,6 @@ PATH                      = require 'path'
 @here_abspath             = ( dirname, P... ) -> PATH.resolve   dirname,        P...
 @cwd_abspath              = ( P...          ) -> PATH.resolve   process.cwd(),  P...
 @cwd_relpath              = ( P...          ) -> PATH.relative  process.cwd(),  P...
-
-#-----------------------------------------------------------------------------------------------------------
-@copy = ( P... ) ->
-  return switch type = @type_of P[ 0 ]
-    when 'pod'  then @assign {}, P...
-    when 'list' then @assign [], P...
-    else throw new Error "µ09231 unable to copy a #{type}"
 
 #-----------------------------------------------------------------------------------------------------------
 @deep_copy = ( P... ) -> ( require './universal-copy' ) P...
@@ -188,8 +176,8 @@ number_formatter = new Intl.NumberFormat 'en-US'
     seed   ?= @._seed
     delta  ?= @._delta
     #.......................................................................................................
-    validate_isa_number seed
-    validate_isa_number delta
+    validate.float seed
+    validate.float delta
     #.......................................................................................................
     throw new Error "seed should not be zero"  unless seed  != 0
     throw new Error "delta should not be zero" unless delta != 0
@@ -204,12 +192,6 @@ number_formatter = new Intl.NumberFormat 'en-US'
   #.........................................................................................................
   return R
 
-
-#-----------------------------------------------------------------------------------------------------------
-### TAINT code duplication (to avoid dependency on CoffeeNode Types). ###
-validate_isa_number = ( x ) ->
-  unless ( Object::toString.call x ) == '[object Number]' and isFinite x
-    throw "expected a number, got #{( require 'util' ).inspect x}"
 
 
 #===========================================================================================================
@@ -472,31 +454,6 @@ validate_isa_number = ( x ) ->
   extname   = njs_path.extname route
   return route[ 0 ... route.length - extname.length ] + extension
 
-#===========================================================================================================
-# LISTS
-#-----------------------------------------------------------------------------------------------------------
-@first_of   = ( collection ) -> collection[ 0 ]
-@last_of    = ( collection ) -> collection[ collection.length - 1 ]
-
-
-
-#===========================================================================================================
-# OBJECT SIZES
-#-----------------------------------------------------------------------------------------------------------
-@size_of = ( x, settings ) ->
-  switch type = CND.type_of x
-    when 'list', 'arguments', 'buffer' then return x.length
-    when 'text'
-      switch selector = settings?[ 'count' ] ? 'codeunits'
-        when 'codepoints' then return ( Array.from x ).length
-        when 'codeunits'  then return x.length
-        when 'bytes'      then return Buffer.byteLength x, ( settings?[ 'encoding' ] ? 'utf-8' )
-        else throw new Error "unknown counting selector #{rpr selector}"
-    when 'set', 'map'     then return x.size
-  if CND.isa_pod x then return ( Object.keys x ).length
-  throw new Error "unable to get size of a #{type}"
-
-
 
 #===========================================================================================================
 # NETWORK
@@ -516,8 +473,8 @@ validate_isa_number = ( x ) ->
 @is_subset = ( subset, superset ) ->
   ### `is_subset subset, superset` returns whether `subset` is a subset of `superset`; this is true if each
   element of `subset` is also an element of `superset`. ###
-  type_of_sub   = CND.type_of subset
-  type_of_super = CND.type_of superset
+  type_of_sub   = type_of subset
+  type_of_super = type_of superset
   unless type_of_sub is type_of_super
     throw new Error "expected two arguments of same type, got #{type_of_sub} and #{type_of_super}"
   switch type_of_sub
