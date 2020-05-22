@@ -29,6 +29,6 @@
   },
   "homepage": "https://github.com/loveencounterflow/cnd",
   "devDependencies": {
-    "guy-test": "^2.0.1"
+    "guy-test": "^2.0.2"
   }
 }
