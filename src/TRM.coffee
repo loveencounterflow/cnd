@@ -10,10 +10,7 @@ badge                     = 'TRM'
 @ANSI                     = require './TRM-VT100-ANALYZER'
 σ_cnd                     = Symbol.for 'cnd'
 { inspect }               = require 'util'
-@types                    = require './types'
-{ isa
-  type_of }               = @types
-
+isa_text                  = ( x ) -> ( typeof x ) is 'string'
 
 #-----------------------------------------------------------------------------------------------------------
 rpr_settings =
@@ -37,7 +34,7 @@ rpr_settings =
 #-----------------------------------------------------------------------------------------------------------
 @_pen = ( P... ) ->
   ### ... ###
-  R = ( ( if isa.text p then p else @rpr p ) for p in P )
+  R = ( ( if isa_text p then p else @rpr p ) for p in P )
   return R.join @separator
 
 #-----------------------------------------------------------------------------------------------------------
@@ -160,7 +157,7 @@ for effect_name of effect_names
       R         = [ effect_on, ]
       last_idx  = P.length - 1
       for p, idx in P
-        R.push if isa.text p then p else @rpr p
+        R.push if isa_text p then p else @rpr p
         if idx isnt last_idx
           R.push effect_on
           R.push @separator
@@ -173,7 +170,7 @@ for color_name, color_code of @constants[ 'colors' ]
       R         = [ color_code, ]
       last_idx  = P.length - 1
       for p, idx in P
-        R.push if isa.text p then p else @rpr p
+        R.push if isa_text p then p else @rpr p
         if idx isnt last_idx
           R.push color_code
           R.push @separator
@@ -298,8 +295,8 @@ get_timestamp = ->
 
 #===========================================================================================================
 # VALUE REPORTING
-#-----------------------------------------------------------------------------------------------------------
-@_prototype_of_object = Object.getPrototypeOf new Object()
+# #-----------------------------------------------------------------------------------------------------------
+# @_prototype_of_object = Object.getPrototypeOf new Object()
 
 #-----------------------------------------------------------------------------------------------------------
 @_dir_options =
@@ -310,31 +307,31 @@ get_timestamp = ->
 @_marker_by_type =
   'function':       '()'
 
-#-----------------------------------------------------------------------------------------------------------
-@dir = ( P... ) ->
-  switch arity = P.length
-    when 0
-      throw new Error "called TRM.dir without arguments"
-    when 1
-      x = P[ 0 ]
-    else
-      x = P[ P.length - 1 ]
-      @log @rainbow p for p, idx in P when idx < P.length - 1
-  width = if process.stdout.isTTY then process.stdout.columns else 108
-  r     = ( @rpr x ).replace /\n\s*/g, ' '
-  r     = r[ .. Math.max 5, width - 5 ].concat @grey ' ...' if r.length > width
-  @log '\n'.concat ( @lime r ), '\n', ( ( @_dir x ).join @grey ' ' ), '\n'
+# #-----------------------------------------------------------------------------------------------------------
+# @dir = ( P... ) ->
+#   switch arity = P.length
+#     when 0
+#       throw new Error "called TRM.dir without arguments"
+#     when 1
+#       x = P[ 0 ]
+#     else
+#       x = P[ P.length - 1 ]
+#       @log @rainbow p for p, idx in P when idx < P.length - 1
+#   width = if process.stdout.isTTY then process.stdout.columns else 108
+#   r     = ( @rpr x ).replace /\n\s*/g, ' '
+#   r     = r[ .. Math.max 5, width - 5 ].concat @grey ' ...' if r.length > width
+#   @log '\n'.concat ( @lime r ), '\n', ( ( @_dir x ).join @grey ' ' ), '\n'
 
-#-----------------------------------------------------------------------------------------------------------
-@_dir = ( x ) ->
-  R = []
-  for [ role, p, type, names, ] in @_get_prototypes_types_and_property_names x, []
-    R.push @grey '('.concat role, ')'
-    R.push @orange type
-    for name in names
-      marker = @_marker_from_type type_of ( Object.getOwnPropertyDescriptor p, name )[ 'value' ]
-      R.push ( @cyan name ).concat @grey marker
-  return R
+# #-----------------------------------------------------------------------------------------------------------
+# @_dir = ( x ) ->
+#   R = []
+#   for [ role, p, type, names, ] in @_get_prototypes_types_and_property_names x, []
+#     R.push @grey '('.concat role, ')'
+#     R.push @orange type
+#     for name in names
+#       marker = @_marker_from_type type_of ( Object.getOwnPropertyDescriptor p, name )[ 'value' ]
+#       R.push ( @cyan name ).concat @grey marker
+#   return R
 
 #-----------------------------------------------------------------------------------------------------------
  @_is_list_idx = ( idx_txt, length ) ->
@@ -345,36 +342,40 @@ get_timestamp = ->
 @_marker_from_type = ( type ) ->
   return @_marker_by_type[ type ] ? '|'.concat type
 
-#-----------------------------------------------------------------------------------------------------------
-@_get_prototypes_types_and_property_names = ( x, types_and_names ) ->
-  role = if types_and_names.length is 0 then 'type' else 'prototype'
-  unless x?
-    types_and_names.push [ role, x, ( type_of x ), [], ]
-    return types_and_names
-  #.........................................................................................................
-  try
-    names           = Object.getOwnPropertyNames x
-    prototype       = Object.getPrototypeOf x
-  catch error
-    throw error unless error[ 'message' ] is 'Object.getOwnPropertyNames called on non-object'
-    x_              = new Object x
-    names           = Object.getOwnPropertyNames x_
-    prototype       = Object.getPrototypeOf x_
-  #.........................................................................................................
-  try
-    length = x.length
-    if length?
-      names = ( name for name in names when not  @_is_list_idx name, x.length )
-  catch error
-    throw error unless error[ 'message' ].test /^Cannot read property 'length' of /
-  #.........................................................................................................
-  names.sort()
-  types_and_names.push [ role, x, ( type_of x ), names ]
-  #.........................................................................................................
-  if prototype? and not ( @_dir_options[ 'skip-object' ] and prototype is @_prototype_of_object )
-    @_get_prototypes_types_and_property_names prototype, types_and_names
-  #.........................................................................................................
-  return types_and_names
+# #-----------------------------------------------------------------------------------------------------------
+# @_get_prototypes_types_and_property_names = ( x, types_and_names ) ->
+#   types                     = require './types'
+#   { isa
+#     type_of }               = @types
+#   #.........................................................................................................
+#   role = if types_and_names.length is 0 then 'type' else 'prototype'
+#   unless x?
+#     types_and_names.push [ role, x, ( type_of x ), [], ]
+#     return types_and_names
+#   #.........................................................................................................
+#   try
+#     names           = Object.getOwnPropertyNames x
+#     prototype       = Object.getPrototypeOf x
+#   catch error
+#     throw error unless error[ 'message' ] is 'Object.getOwnPropertyNames called on non-object'
+#     x_              = new Object x
+#     names           = Object.getOwnPropertyNames x_
+#     prototype       = Object.getPrototypeOf x_
+#   #.........................................................................................................
+#   try
+#     length = x.length
+#     if length?
+#       names = ( name for name in names when not  @_is_list_idx name, x.length )
+#   catch error
+#     throw error unless error[ 'message' ].test /^Cannot read property 'length' of /
+#   #.........................................................................................................
+#   names.sort()
+#   types_and_names.push [ role, x, ( type_of x ), names ]
+#   #.........................................................................................................
+#   if prototype? and not ( @_dir_options[ 'skip-object' ] and prototype is @_prototype_of_object )
+#     @_get_prototypes_types_and_property_names prototype, types_and_names
+#   #.........................................................................................................
+#   return types_and_names
 
 
 

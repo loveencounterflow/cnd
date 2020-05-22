@@ -9,7 +9,6 @@ rpr                       = njs_util.inspect
 global[ σ_cnd ]          ?= {}
 global[ σ_cnd ].t0       ?= Date.now()
 is_function								= ( x ) -> ( Object::toString.call x ) is '[object Function]'
-@types 										= require './types'
 
 #===========================================================================================================
 # ACQUISITION

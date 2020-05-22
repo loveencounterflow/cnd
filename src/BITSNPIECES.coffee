@@ -9,10 +9,6 @@ rpr                       = njs_util.inspect
 CND                       = require './main'
 PATH                      = require 'path'
 @flatten                  = ( x, depth = Infinity ) -> x.flat depth
-@types                    = require './types'
-{ isa
-  validate
-  type_of }               = @types
 
 #-----------------------------------------------------------------------------------------------------------
 @jr     = JSON.stringify
@@ -176,8 +172,8 @@ number_formatter = new Intl.NumberFormat 'en-US'
     seed   ?= @._seed
     delta  ?= @._delta
     #.......................................................................................................
-    validate.float seed
-    validate.float delta
+    unless ( typeof seed  ) is 'number' and ( Number.isFinite seed  ) then throw new Error "^3397^ expected a number, got #{rpr seed}"
+    unless ( typeof delta ) is 'number' and ( Number.isFinite delta ) then throw new Error "^3398^ expected a number, got #{rpr delta}"
     #.......................................................................................................
     throw new Error "seed should not be zero"  unless seed  != 0
     throw new Error "delta should not be zero" unless delta != 0
@@ -467,33 +463,4 @@ number_formatter = new Intl.NumberFormat 'en-US'
         R.push description[ 'address' ]
   return R
 
-#===========================================================================================================
-# SETS
-#-----------------------------------------------------------------------------------------------------------
-@is_subset = ( subset, superset ) ->
-  ### `is_subset subset, superset` returns whether `subset` is a subset of `superset`; this is true if each
-  element of `subset` is also an element of `superset`. ###
-  type_of_sub   = type_of subset
-  type_of_super = type_of superset
-  unless type_of_sub is type_of_super
-    throw new Error "expected two arguments of same type, got #{type_of_sub} and #{type_of_super}"
-  switch type_of_sub
-    when 'list'
-      return false unless subset.length <= superset.length
-      for element in subset
-        return false unless element in superset
-      return true
-    when 'set'
-      return false unless subset.size <= superset.size
-      iterator = subset.values()
-      loop
-        { value, done, } = iterator.next()
-        return true if done
-        return false unless superset.has value
-      # for element in
-      #   return false unless element in subset
-      return true
-    else
-      throw new Error "expected lists or sets, got #{type_of_sub} and #{type_of_super}"
-  return null
 

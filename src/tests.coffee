@@ -24,24 +24,24 @@ CND                       = require './main'
 test                      = require 'guy-test'
 
 
-#-----------------------------------------------------------------------------------------------------------
-@[ "is_subset" ] = ( T ) ->
-  T.eq false, CND.is_subset ( Array.from 'abcde' ), ( Array.from 'abcd' )
-  T.eq false, CND.is_subset ( Array.from 'abcx'  ), ( Array.from 'abcd' )
-  T.eq false, CND.is_subset ( Array.from 'abcd'  ), ( []                )
-  T.eq true,  CND.is_subset ( Array.from 'abcd'  ), ( Array.from 'abcd' )
-  T.eq true,  CND.is_subset ( Array.from 'abc'   ), ( Array.from 'abcd' )
-  T.eq true,  CND.is_subset ( []                 ), ( Array.from 'abcd' )
-  T.eq true,  CND.is_subset ( []                 ), ( Array.from []     )
-  T.eq false, CND.is_subset ( new Set 'abcde'    ), ( new Set 'abcd'    )
-  T.eq false, CND.is_subset ( new Set 'abcx'     ), ( new Set 'abcd'    )
-  T.eq false, CND.is_subset ( new Set 'abcx'     ), ( new Set()         )
-  T.eq true,  CND.is_subset ( new Set 'abcd'     ), ( new Set 'abcd'    )
-  T.eq true,  CND.is_subset ( new Set 'abc'      ), ( new Set 'abcd'    )
-  T.eq true,  CND.is_subset ( new Set()          ), ( new Set 'abcd'    )
-  T.eq true,  CND.is_subset ( new Set()          ), ( new Set()         )
-  #.........................................................................................................
-  return null
+# #-----------------------------------------------------------------------------------------------------------
+# @[ "is_subset" ] = ( T ) ->
+#   T.eq false, CND.is_subset ( Array.from 'abcde' ), ( Array.from 'abcd' )
+#   T.eq false, CND.is_subset ( Array.from 'abcx'  ), ( Array.from 'abcd' )
+#   T.eq false, CND.is_subset ( Array.from 'abcd'  ), ( []                )
+#   T.eq true,  CND.is_subset ( Array.from 'abcd'  ), ( Array.from 'abcd' )
+#   T.eq true,  CND.is_subset ( Array.from 'abc'   ), ( Array.from 'abcd' )
+#   T.eq true,  CND.is_subset ( []                 ), ( Array.from 'abcd' )
+#   T.eq true,  CND.is_subset ( []                 ), ( Array.from []     )
+#   T.eq false, CND.is_subset ( new Set 'abcde'    ), ( new Set 'abcd'    )
+#   T.eq false, CND.is_subset ( new Set 'abcx'     ), ( new Set 'abcd'    )
+#   T.eq false, CND.is_subset ( new Set 'abcx'     ), ( new Set()         )
+#   T.eq true,  CND.is_subset ( new Set 'abcd'     ), ( new Set 'abcd'    )
+#   T.eq true,  CND.is_subset ( new Set 'abc'      ), ( new Set 'abcd'    )
+#   T.eq true,  CND.is_subset ( new Set()          ), ( new Set 'abcd'    )
+#   T.eq true,  CND.is_subset ( new Set()          ), ( new Set()         )
+#   #.........................................................................................................
+#   return null
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "deep_copy" ] = ( T ) ->
