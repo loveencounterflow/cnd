@@ -31,7 +31,5 @@
   "devDependencies": {
     "guy-test": "^2.0.2"
   },
-  "dependencies": {
-    "intertype": "^4.1.0"
-  }
+  "dependencies": {}
 }
