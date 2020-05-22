@@ -30,5 +30,8 @@
   "homepage": "https://github.com/loveencounterflow/cnd",
   "devDependencies": {
     "guy-test": "^2.0.2"
+  },
+  "dependencies": {
+    "intertype": "^4.0.0"
   }
 }
