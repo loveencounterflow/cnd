@@ -9,7 +9,7 @@
 badge                     = 'TRM'
 @ANSI                     = require './TRM-VT100-ANALYZER'
 σ_cnd                     = Symbol.for 'cnd'
-{ inspect }               = require 'util'
+_inspect                  = ( require 'util' ).inspect
 isa_text                  = ( x ) -> ( typeof x ) is 'string'
 
 #-----------------------------------------------------------------------------------------------------------
@@ -19,7 +19,16 @@ rpr_settings =
   breakLength:      Infinity
   compact:          true
   colors:           false
-@rpr = rpr = ( P... ) -> ( ( inspect x, rpr_settings ) for x in P ).join ' '
+@rpr = rpr = ( P... ) -> ( ( _inspect x, rpr_settings ) for x in P ).join ' '
+
+#-----------------------------------------------------------------------------------------------------------
+inspect_settings =
+  depth:            Infinity
+  maxArrayLength:   Infinity
+  breakLength:      Infinity
+  compact:          false
+  colors:           true
+@inspect = ( P... ) -> ( ( _inspect x, inspect_settings ) for x in P ).join ' '
 
 #-----------------------------------------------------------------------------------------------------------
 @get_output_method = ( target, options ) ->
