@@ -469,7 +469,7 @@ number_formatter = new Intl.NumberFormat 'en-US'
 # ESCAPE FOR COMMAND LINE
 #-----------------------------------------------------------------------------------------------------------
 ```
-thx to https://github.com/xxorax/node-shell-escape/blob/master/shell-escape.js
+// thx to https://github.com/xxorax/node-shell-escape/blob/master/shell-escape.js
 this.shellescape = function shellescape(a) {
   var ret = [];
 
