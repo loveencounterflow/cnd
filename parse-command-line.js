@@ -1,4 +1,5 @@
 // Copyright 2018-2020 the Deno authors. All rights reserved. MIT license.
+// see https://doc.deno.land/https/deno.land/std@0.61.0/flags/mod.ts
 // import { assert } from "../_util/assert.ts";
 
 function assert( x ) {
