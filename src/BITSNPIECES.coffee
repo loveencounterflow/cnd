@@ -464,3 +464,24 @@ number_formatter = new Intl.NumberFormat 'en-US'
   return R
 
 
+
+#===========================================================================================================
+# ESCAPE FOR COMMAND LINE
+#-----------------------------------------------------------------------------------------------------------
+```
+thx to https://github.com/xxorax/node-shell-escape/blob/master/shell-escape.js
+this.shellescape = function shellescape(a) {
+  var ret = [];
+
+  a.forEach(function(s) {
+    if (/[^A-Za-z0-9_\/:=-]/.test(s)) {
+      s = "'"+s.replace(/'/g,"'\\''")+"'";
+      s = s.replace(/^(?:'')+/g, '') // unduplicate single-quote at the beginning
+        .replace(/\\'''/g, "\\'" ); // remove non-escaped single-quote if there are enclosed between 2 escaped
+    }
+    ret.push(s);
+  });
+
+  return ret.join(' ');
+}
+```
