@@ -453,4 +453,6 @@ a nice test to see the effect*
     return null
 ```
 
+* [ ] use together with [`node-icecream`](https://github.com/jmerle/node-icecream): `ic = ( require
+  'node-icecream' ) { prefix: '', outputFunction: debug, }`
 
