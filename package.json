@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/loveencounterflow/cnd/issues"
   },
-  "homepage": "https://github.com/loveencounterflow/cnd"
+  "homepage": "https://github.com/loveencounterflow/cnd",
+  "dependencies": {
+    "jsx-number-format": "^0.1.4"
+  }
 }
