@@ -8,6 +8,7 @@ njs_util                  = require 'util'
 rpr                       = njs_util.inspect
 CND                       = require './main'
 PATH                      = require 'path'
+{ NumberFormat }          = require 'jsx-number-format'
 @flatten                  = ( x, depth = Infinity ) -> x.flat depth
 
 #-----------------------------------------------------------------------------------------------------------
@@ -23,8 +24,11 @@ PATH                      = require 'path'
 @deep_copy = ( P... ) -> ( require './universal-copy' ) P...
 
 #-----------------------------------------------------------------------------------------------------------
-number_formatter = new Intl.NumberFormat 'en-US'
-@format_number = ( x ) -> number_formatter.format x
+# number_formatter = new Intl.NumberFormat 'en-US'
+# @format_number = ( x ) -> number_formatter.format x
+@format_number = ( n ) ->
+  R = NumberFormat n, 3
+  return R.replace /\.000/, ''
 
 #-----------------------------------------------------------------------------------------------------------
 @escape_regex = ( text ) ->
