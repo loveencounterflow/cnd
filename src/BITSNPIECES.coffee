@@ -133,7 +133,7 @@ PATH                      = require 'path'
 
 #-----------------------------------------------------------------------------------------------------------
 @random_integer = ( min = 0, max = 2 ) ->
-  ### Return a random integer between min (inclusive) and max (inclusive).
+  ### Return a random integer between min (inclusive) and max (exclusive).
   From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
   via http://stackoverflow.com/a/1527820/256361. ###
   return @integer_from_normal_float Math.random(), min, max
