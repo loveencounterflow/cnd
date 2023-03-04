@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-node --require "$(realpath "$0")"/../../lib/exception-handler.js --stack-trace-limit=100 "$@"
+# node --require "$(realpath "$0")"/../../lib/exception-handler.js --stack-trace-limit=100 "$@"
+node --require nodexh --stack-trace-limit=100 "$@"
 
