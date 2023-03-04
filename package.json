@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/loveencounterflow/cnd",
   "dependencies": {
-    "jsx-number-format": "^0.1.4"
+    "jsx-number-format": "^0.1.4",
+    "nodexh": "^2.2.0"
   }
 }
